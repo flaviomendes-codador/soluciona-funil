@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funil de Vendas com IA — Soluciona Odontologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0A1628;
+      --navy2:   #0F2142;
+      --teal:    #00C4A7;
+      --teal2:   #00A98F;
+      --sky:     #38BDF8;
+      --light:   #F0FFFE;
+      --white:   #FFFFFF;
+      --text:    #1E293B;
+      --muted:   #64748B;
+      --red:     #EF4444;
+      --amber:   #F59E0B;
+      --green:   #10B981;
+      --border:  rgba(255,255,255,0.12);
+    }
+
+    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+    body { background: var(--white); color: var(--text); overflow-x: hidden; }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--sky));
+      z-index: 2000; transition: width 0.15s ease; width: 0%;
+    }
+
+    /* ── Top nav ── */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(10,22,40,0.92); backdrop-filter: blur(12px);
+      padding: 14px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo-badge {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: white; font-size: 1rem;
+    }
+    .nav-logo-text { color: white; font-weight: 700; font-size: 0.95rem; }
+    .nav-logo-text span { color: var(--teal); }
+    .nav-slide-counter { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+    /* ── Dot nav ── */
+    .dot-nav {
+      position: fixed; right: 20px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; z-index: 1000;
+    }
+    .dot-nav a {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); transition: all 0.3s;
+      display: block;
+    }
+    .dot-nav a.active, .dot-nav a:hover {
+      background: var(--teal); transform: scale(1.6);
+    }
+
+    /* ── Sections ── */
+    .section {
+      min-height: 100vh; padding: 100px 80px 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .s-dark  { background: var(--navy); color: var(--white); }
+    .s-dark2 { background: var(--navy2); color: var(--white); }
+    .s-light { background: var(--light); }
+    .s-white { background: var(--white); }
+    .s-teal  { background: linear-gradient(135deg, #004D40, #00796B); color: var(--white); }
+
+    /* ── Background decorations ── */
+    .bg-blob {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,196,167,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bg-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ── Typography ── */
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,196,167,0.15); color: var(--teal);
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 24px;
+      border: 1px solid rgba(0,196,167,0.25);
+    }
+    .s-dark .section-tag, .s-dark2 .section-tag, .s-teal .section-tag {
+      background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.2);
+    }
+    h1 { font-size: clamp(2.8rem,5.5vw,5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(2rem,4vw,3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+    h3 { font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 700; }
+    .lead { font-size: clamp(1rem,1.5vw,1.25rem); line-height: 1.7; opacity: 0.85; }
+    .teal-text { color: var(--teal); }
+    .sky-text  { color: var(--sky); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 100px; font-weight: 600;
+      font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; border: none;
+    }
+    .btn-teal  { background: var(--teal); color: white; }
+    .btn-teal:hover { background: var(--teal2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,196,167,0.35); }
+    .btn-ghost { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.35); }
+    .btn-ghost:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+    /* ── Cards ── */
+    .card {
+      background: white; border-radius: 20px; padding: 28px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .card-dark {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      border-radius: 20px; padding: 24px;
+    }
+    .card-teal {
+      background: linear-gradient(135deg, rgba(0,196,167,0.15), rgba(56,189,248,0.1));
+      border: 1px solid rgba(0,196,167,0.3); border-radius: 20px; padding: 24px;
+    }
+
+    /* ── Grids ── */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+    .g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+    .gcol { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── Stat blocks ── */
+    .stat-block { text-align: center; }
+    .stat-num {
+      font-size: clamp(3.5rem,7vw,6rem); font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.9rem; color: rgba(255,255,255,0.65); margin-top: 6px; }
+
+    /* ── Tier badges ── */
+    .tier-row {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 20px; border-radius: 16px;
+    }
+    .tier-fire  { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.2); }
+    .tier-hot   { background: rgba(245,158,11,0.1);  border: 1px solid rgba(245,158,11,0.2); }
+    .tier-warm  { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); }
+    .tier-cold  { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
+    .tier-emoji { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
+    .tier-title { font-weight: 700; margin-bottom: 4px; }
+    .tier-desc  { font-size: 0.85rem; opacity: 0.75; line-height: 1.5; }
+
+    /* ── Follow-up timeline ── */
+    .fu-list { display: flex; flex-direction: column; gap: 0; }
+    .fu-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding-bottom: 20px; position: relative;
+    }
+    .fu-item:not(:last-child)::before {
+      content: ''; position: absolute;
+      left: 19px; top: 44px; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--teal), transparent);
+    }
+    .fu-dot {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; color: white;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+    }
+    .fu-content { padding-top: 8px; }
+    .fu-day  { font-weight: 700; font-size: 0.85rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.05em; }
+    .fu-text { font-weight: 600; margin-top: 2px; }
+    .fu-sub  { font-size: 0.85rem; opacity: 0.7; margin-top: 3px; }
+
+    /* ── Metrics comparison ── */
+    .metric-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; border-radius: 14px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    }
+    .m-label { flex: 1; font-size: 0.9rem; opacity: 0.8; }
+    .m-before { font-weight: 700; color: var(--red); min-width: 80px; text-align: center; }
+    .m-arrow  { color: var(--teal); font-size: 1.2rem; }
+    .m-after  { font-weight: 800; color: var(--teal); min-width: 80px; text-align: center; }
+
+    /* ── Sprint steps ── */
+    .sprint-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
+    .sprint-card {
+      background: white; border-radius: 16px; padding: 20px 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06); text-align: center;
+      border-top: 3px solid var(--teal);
+    }
+    .sprint-num {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 8px;
+    }
+    .sprint-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+    .sprint-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── Quote ── */
+    .blockquote {
+      border-left: 4px solid var(--teal);
+      padding: 20px 24px;
+      background: rgba(0,196,167,0.08); border-radius: 0 16px 16px 0;
+      font-size: 1.15rem; font-style: italic; line-height: 1.7;
+    }
+    .s-dark .blockquote { background: rgba(0,196,167,0.12); color: white; }
+
+    /* ── Feature list ── */
+    .feat-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .feat-item:last-child { border-bottom: none; }
+    .feat-icon {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(0,196,167,0.15); color: var(--teal);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .feat-title { font-weight: 600; }
+    .feat-sub   { font-size: 0.85rem; opacity: 0.7; margin-top: 3px; }
+
+    /* ── Checklist ── */
+    .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+    .check-icon { color: var(--teal); font-size: 1.1rem; flex-shrink: 0; }
+    .x-icon     { color: var(--red); font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── CTA section ── */
+    .cta-box {
+      background: linear-gradient(135deg, rgba(0,196,167,0.15), rgba(56,189,248,0.1));
+      border: 1px solid rgba(0,196,167,0.3); border-radius: 24px; padding: 48px;
+      text-align: center;
+    }
+
+    /* ── Animations ── */
+    .anim { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .anim.in { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+    .d5 { transition-delay: 0.5s; } .d6 { transition-delay: 0.6s; }
+
+    /* ── Scrolldown arrow ── */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      opacity: 0.5; animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
+    }
+    .scroll-hint span { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .scroll-hint svg  { width: 20px; height: 20px; }
+
+    /* ── Funnel diagram ── */
+    .funnel-step {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; border-radius: 14px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 6px;
+    }
+    .funnel-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--teal); color: white; display: flex;
+      align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+    }
+    .funnel-arrow { text-align: center; color: var(--teal); font-size: 1.2rem; line-height: 1; margin: 2px 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .section { padding: 90px 40px 60px; }
+      .g2 { grid-template-columns: 1fr; }
+      .g3 { grid-template-columns: 1fr 1fr; }
+      .g4 { grid-template-columns: 1fr 1fr; }
+      .sprint-grid { grid-template-columns: repeat(3,1fr); }
+      .dot-nav { display: none; }
+      .top-nav { padding: 14px 24px; }
+    }
+    @media (max-width: 640px) {
+      .section { padding: 80px 20px 48px; }
+      .g3, .g4 { grid-template-columns: 1fr; }
+      .sprint-grid { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 2.2rem; }
+      h2 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a class="nav-logo" href="#hero">
+    <div class="nav-logo-badge">S</div>
+    <div class="nav-logo-text">Soluciona <span>Odontologia</span></div>
+  </a>
+  <span class="nav-slide-counter" id="nav-counter">1 / 12</span>
+</nav>
+
+<!-- Dot Navigation -->
+<nav class="dot-nav" id="dot-nav">
+  <a href="#hero"           data-section="0" title="Início"></a>
+  <a href="#problema"       data-section="1" title="O Problema"></a>
+  <a href="#bucomaxilo"     data-section="2" title="Bucomaxilo"></a>
+  <a href="#solucao"        data-section="3" title="A Solução"></a>
+  <a href="#scoring"        data-section="4" title="Lead Scoring"></a>
+  <a href="#secretaria"     data-section="5" title="Secretária IA"></a>
+  <a href="#call-doutor"    data-section="6" title="Call com Dr. Leandro"></a>
+  <a href="#followup"       data-section="7" title="Follow-up x7"></a>
+  <a href="#posvendas"      data-section="8" title="Pós-venda"></a>
+  <a href="#metricas"       data-section="9" title="Métricas"></a>
+  <a href="#implementacao"  data-section="10" title="Implementação"></a>
+  <a href="#cta"            data-section="11" title="Próximos Passos"></a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1 — HERO                          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark" id="hero" data-index="0">
+  <div class="bg-blob" style="width:700px;height:700px;top:-200px;right:-200px;"></div>
+  <div class="bg-grid"></div>
+
+  <div style="max-width:900px;position:relative;z-index:1;">
+    <div class="section-tag anim">🦷 Cirurgia Bucomaxilofacial · Soluciona Odontologia</div>
+    <h1 class="anim d1">
+      Cada lead que entra<br/>
+      <span class="teal-text">vira consulta agendada.</span><br/>
+      <span style="opacity:0.5;font-weight:300;font-size:0.65em;">Automaticamente.</span>
+    </h1>
+    <p class="lead anim d2" style="max-width:620px;margin-top:24px;">
+      Um sistema completo de vendas com Inteligência Artificial trabalhando 24h
+      para o Dr. Leandro Cardoso — do anúncio ao paciente na cadeira.
+    </p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;" class="anim d3">
+      <a href="#solucao" class="btn btn-teal">Ver como funciona ↓</a>
+      <a href="#cta" class="btn btn-ghost">Próximos passos</a>
+    </div>
+
+    <div class="g3 anim d4" style="margin-top:56px;max-width:700px;">
+      <div class="stat-block">
+        <span class="stat-num">2min</span>
+        <div class="stat-label">Tempo máximo de resposta ao lead</div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">24h</span>
+        <div class="stat-label">Disponibilidade da secretária IA</div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">7×</span>
+        <div class="stat-label">Follow-ups automáticos p/ cada lead</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" style="color:rgba(255,255,255,0.4);">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <span>Role para baixo</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2 — O PROBLEMA                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-white" id="problema" data-index="1">
+  <div class="g2" style="max-width:1100px;">
+    <div>
+      <div class="section-tag anim">O problema</div>
+      <h2 class="anim d1">Você está perdendo leads <span class="teal-text">todos os dias.</span></h2>
+      <p class="lead anim d2" style="margin-top:20px;color:var(--muted);">
+        Leads de cirurgia bucomaxilofacial têm ticket alto — mas são extremamente sensíveis ao tempo de resposta.
+      </p>
+
+      <div class="gcol anim d3" style="margin-top:32px;">
+        <div class="card" style="border-left:4px solid var(--red);">
+          <div style="font-weight:700;color:var(--red);margin-bottom:6px;">📞 Cenário típico</div>
+          <div style="font-size:0.9rem;line-height:1.7;color:var(--muted);">Lead preenche formulário às 22h. Secretária responde no dia seguinte às 9h. Lead já foi para o concorrente.</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--amber);">
+          <div style="font-weight:700;color:var(--amber);margin-bottom:6px;">⏱️ Tempo médio de resposta em clínicas</div>
+          <div style="font-size:2rem;font-weight:900;color:var(--text);">4 a 24 horas</div>
+          <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">Janela onde o lead esfria, pesquisa concorrentes e desiste.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anim d2">
+      <div class="card-teal" style="text-align:center;padding:48px 32px;">
+        <div style="font-size:5rem;font-weight:900;background:linear-gradient(135deg,var(--teal),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">21×</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-top:16px;">Mais conversões</div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:8px;line-height:1.6;">Leads respondidos em até 5 minutos convertem 21 vezes mais do que leads respondidos após 30 minutos.</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:12px;font-style:italic;">— Harvard Business Review</div>
+      </div>
+      <div class="blockquote anim d4" style="margin-top:20px;">
+        <strong>Quantos leads a Soluciona Odontologia perdeu nos últimos 6 meses por demora no atendimento?</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3 — BUCOMAXILO É DIFERENTE        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-light" id="bucomaxilo" data-index="2">
+  <div style="max-width:1100px;width:100%;">
+    <div class="section-tag anim">Contexto especializado</div>
+    <h2 class="anim d1">Cirurgia Bucomaxilofacial <span class="teal-text">exige um sistema diferente.</span></h2>
+    <p class="lead anim d2" style="max-width:680px;margin-top:16px;color:var(--muted);">
+      Não dá para tratar um lead de implante zigomático como lead de limpeza. O sistema é calibrado para o contexto do Dr. Leandro.
+    </p>
+
+    <div class="g4 anim d3" style="margin-top:40px;">
+      <div class="card">
+        <div style="font-size:2rem;margin-bottom:12px;">💰</div>
+        <div style="font-weight:800;font-size:1.1rem;margin-bottom:8px;">Ticket alto</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">R$5.000 a R$80.000+ por procedimento. Cada lead perdido é muito dinheiro.</div>
+      </div>
+      <div class="card">
+        <div style="font-size:2rem;margin-bottom:12px;">😰</div>
+        <div style="font-weight:800;font-size:1.1rem;margin-bottom:8px;">Medo da cirurgia</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Pacientes chegam ansiosos. Precisam de acolhimento rápido e especializado.</div>
+      </div>
+      <div class="card">
+        <div style="font-size:2rem;margin-bottom:12px;">🏥</div>
+        <div style="font-weight:800;font-size:1.1rem;margin-bottom:8px;">Indicações médicas</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Muitos vêm por indicação de dentista ou médico — lead qualificado, mas com decisão lenta.</div>
+      </div>
+      <div class="card">
+        <div style="font-size:2rem;margin-bottom:12px;">⚔️</div>
+        <div style="font-weight:800;font-size:1.1rem;margin-bottom:8px;">Concorrência</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Quem responde primeiro, geralmente fecha primeiro. Velocidade é vantagem competitiva.</div>
+      </div>
+    </div>
+
+    <div class="card anim d4" style="margin-top:28px;padding:28px 32px;display:flex;align-items:center;gap:24px;background:var(--navy2);color:white;">
+      <div style="font-size:2.5rem;flex-shrink:0;">🎯</div>
+      <div>
+        <div style="font-weight:700;font-size:1.05rem;">O sistema é treinado especificamente para bucomaxilofacial</div>
+        <div style="font-size:0.9rem;opacity:0.7;margin-top:6px;">Scripts calibrados para: cirurgia ortognática, implantes zigomáticos, enxertos ósseos, traumas faciais, cistos e tumores — sempre com o nome do Dr. Leandro Cardoso.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4 — A SOLUÇÃO                     -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark2" id="solucao" data-index="3">
+  <div class="bg-blob" style="width:600px;height:600px;bottom:-200px;left:-150px;"></div>
+  <div class="bg-grid"></div>
+
+  <div class="g2" style="max-width:1100px;position:relative;z-index:1;">
+    <div>
+      <div class="section-tag anim">A solução</div>
+      <h2 class="anim d1">Funil de Vendas<br/><span class="teal-text">100% Automatizado</span></h2>
+      <p class="lead anim d2" style="margin-top:20px;">
+        Um sistema que trabalha enquanto o Dr. Leandro opera. Nenhum lead fica sem resposta. Nunca.
+      </p>
+      <div class="anim d3" style="margin-top:32px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--teal);flex-shrink:0;"></div>
+          <div style="font-size:0.9rem;">Lead preenche formulário → sistema age em <strong>menos de 2 minutos</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--teal);flex-shrink:0;"></div>
+          <div style="font-size:0.9rem;">IA qualifica, conversa e agenda — <strong>sem intervenção humana</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--teal);flex-shrink:0;"></div>
+          <div style="font-size:0.9rem;">Leads premium ganham <strong>acesso direto ao Dr. Leandro</strong></div>
+        </div>
+      </div>
+      <a href="#whatsapp-demo.html" class="btn btn-teal anim d4" style="margin-top:32px;" onclick="return false;">Ver demo ao vivo →</a>
+    </div>
+
+    <div class="anim d2">
+      <div class="funnel-step"><div class="funnel-num">1</div><div><strong>Anúncio</strong> (Meta / Google) <span style="opacity:0.6;">— segmentação local</span></div></div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step"><div class="funnel-num">2</div><div><strong>Landing Page</strong> <span style="opacity:0.6;">— otimizada para converter</span></div></div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step"><div class="funnel-num">3</div><div><strong>Formulário</strong> <span style="opacity:0.6;">— nome, WhatsApp, necessidade, urgência</span></div></div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step" style="background:rgba(0,196,167,0.15);border-color:rgba(0,196,167,0.35);"><div class="funnel-num">4</div><div><strong style="color:var(--teal);">FunnelMetrics</strong> <span style="opacity:0.6;">— qualificação inteligente do lead</span></div></div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step"><div class="funnel-num">5</div><div><strong>Secretária IA</strong> <span style="opacity:0.6;">— WhatsApp, resposta em 2 min</span></div></div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step"><div class="funnel-num">6</div>
+        <div>
+          <strong>Fechamento</strong>
+          <span style="opacity:0.6;"> ou follow-up x7</span><br/>
+          <span style="font-size:0.8rem;opacity:0.6;">se fechar → pós-venda automático</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5 — LEAD SCORING                  -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-white" id="scoring" data-index="4">
+  <div style="max-width:1100px;width:100%;">
+    <div class="section-tag anim">Qualificação inteligente</div>
+    <h2 class="anim d1">Não tratamos todos os <span class="teal-text">leads igual.</span></h2>
+    <p class="lead anim d2" style="max-width:640px;margin-top:16px;color:var(--muted);">
+      O FunnelMetrics classifica cada lead automaticamente com base no procedimento, urgência e origem. O Dr. Leandro só recebe leads de alto valor.
+    </p>
+
+    <div class="gcol anim d3" style="margin-top:36px;max-width:800px;">
+      <div class="tier-row tier-fire">
+        <div class="tier-emoji">🔥</div>
+        <div>
+          <div class="tier-title">Premium — Score 8 a 10</div>
+          <div class="tier-desc">Implante Zigomático, All-on-4/6, Cirurgia Ortognática, indicação médica urgente</div>
+          <div style="margin-top:8px;display:inline-block;background:rgba(239,68,68,0.15);color:#EF4444;padding:4px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;">→ Oferta de call com o Dr. Leandro em &lt;5min</div>
+        </div>
+      </div>
+      <div class="tier-row tier-hot">
+        <div class="tier-emoji">🔴</div>
+        <div>
+          <div class="tier-title">Quente — Score 5 a 7</div>
+          <div class="tier-desc">Enxerto ósseo, remoção de cisto, trauma — alta urgência e ticket médio-alto</div>
+          <div style="margin-top:8px;display:inline-block;background:rgba(245,158,11,0.15);color:#F59E0B;padding:4px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;">→ Secretária IA responde em &lt;2 min</div>
+        </div>
+      </div>
+      <div class="tier-row tier-warm">
+        <div class="tier-emoji">🟡</div>
+        <div>
+          <div class="tier-title">Morno — Score 3 a 4</div>
+          <div class="tier-desc">Extração de siso, distúrbio de ATM, curiosidade inicial</div>
+          <div style="margin-top:8px;display:inline-block;background:rgba(251,191,36,0.15);color:#D97706;padding:4px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;">→ Secretária IA em até 5 min</div>
+        </div>
+      </div>
+      <div class="tier-row tier-cold">
+        <div class="tier-emoji">🟢</div>
+        <div>
+          <div class="tier-title">Frio — Score 0 a 2</div>
+          <div class="tier-desc">Só pesquisando, urgência baixa, sem procedimento definido</div>
+          <div style="margin-top:8px;display:inline-block;background:rgba(16,185,129,0.15);color:#10B981;padding:4px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;">→ Sequência de nutrição automática</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim d4" style="margin-top:28px;background:var(--navy2);color:white;padding:20px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="font-size:1.8rem;">🎯</div>
+      <div style="font-size:0.9rem;line-height:1.6;opacity:0.9;">O Dr. Leandro não precisa ver leads frios. Ele foca nos pacientes que <strong>realmente precisam da expertise dele agora</strong> — enquanto o sistema cuida do resto.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 6 — SECRETÁRIA IA                 -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark" id="secretaria" data-index="5">
+  <div class="bg-blob" style="width:500px;height:500px;top:-100px;right:-100px;"></div>
+
+  <div class="g2" style="max-width:1100px;position:relative;z-index:1;">
+    <div>
+      <div class="section-tag anim">Secretária virtual</div>
+      <h2 class="anim d1">Conheça a <span class="teal-text">Ana.</span><br/>Ela nunca dorme.</h2>
+      <p class="lead anim d2" style="margin-top:20px;">
+        Assistente virtual treinada especificamente para cirurgia bucomaxilofacial. Responde, qualifica, supera objeções e agenda — tudo pelo WhatsApp.
+      </p>
+      <div class="anim d3" style="margin-top:32px;">
+        <div class="feat-item">
+          <div class="feat-icon">⚡</div>
+          <div>
+            <div class="feat-title">Responde em &lt;2 minutos</div>
+            <div class="feat-sub">A qualquer hora do dia ou da noite — sem exceções</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">🧠</div>
+          <div>
+            <div class="feat-title">Especializada em bucomaxilo</div>
+            <div class="feat-sub">Conhece todos os procedimentos, sabe lidar com medo e dúvidas</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">📅</div>
+          <div>
+            <div class="feat-title">Agenda diretamente na consulta</div>
+            <div class="feat-sub">Integrada com o calendário da clínica — zero intervenção manual</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">🤝</div>
+          <div>
+            <div class="feat-title">Escala para humano quando necessário</div>
+            <div class="feat-sub">Urgências médicas, pedidos de humano, casos complexos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anim d2">
+      <div class="card-dark" style="padding:32px;">
+        <div style="font-weight:700;margin-bottom:20px;color:var(--teal);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;">Exemplo de conversa — Ana</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="background:rgba(0,196,167,0.12);border-radius:12px 12px 0 12px;padding:12px 16px;font-size:0.88rem;line-height:1.5;align-self:flex-end;max-width:90%;">
+            Olá Marco! 😊 Sou a Ana, da Soluciona Odontologia. Vi que você tem interesse em implante zigomático. O Dr. Leandro Cardoso é especialista nesse procedimento! Pode me contar mais sobre o seu caso?
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:12px 12px 12px 0;padding:12px 16px;font-size:0.88rem;line-height:1.5;align-self:flex-start;max-width:85%;">
+            Fui indicado pelo meu dentista. Já perdi osso e ele disse que só implante zigomático resolve.
+          </div>
+          <div style="background:rgba(0,196,167,0.12);border-radius:12px 12px 0 12px;padding:12px 16px;font-size:0.88rem;line-height:1.5;align-self:flex-end;max-width:90%;">
+            Entendi, Marco! Indicação de dentista já é um excelente sinal. O Dr. Leandro tem ampla experiência nesse procedimento e trabalha em conjunto com o dentista de origem. Tenho horários disponíveis ainda essa semana para avaliação. Qual dia fica melhor pra você?
+          </div>
+        </div>
+        <a href="whatsapp-demo.html" target="_blank" class="btn btn-teal" style="width:100%;justify-content:center;margin-top:20px;font-size:0.9rem;">
+          Ver conversa completa ao vivo →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 7 — CALL COM O DOUTOR             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-teal" id="call-doutor" data-index="6">
+  <div class="bg-blob" style="width:500px;height:500px;bottom:-100px;right:-50px;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);"></div>
+
+  <div style="max-width:1000px;position:relative;z-index:1;">
+    <div class="section-tag anim" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.25);">✨ Recurso exclusivo — Premium</div>
+    <h2 class="anim d1">Para os leads mais valiosos:<br/><strong>acesso direto ao Dr. Leandro.</strong></h2>
+    <p class="lead anim d2" style="margin-top:20px;max-width:680px;">
+      Quando o FunnelMetrics identifica um lead de altíssimo valor, o sistema não passa para fila — oferece uma conversa de 30 minutos com o Dr. Leandro Cardoso em até 5 minutos.
+    </p>
+
+    <div class="g3 anim d3" style="margin-top:40px;">
+      <div class="card-dark" style="border-color:rgba(255,255,255,0.2);">
+        <div style="font-size:1.8rem;margin-bottom:12px;">1️⃣</div>
+        <div style="font-weight:700;margin-bottom:8px;">Lead preenche o formulário</div>
+        <div style="font-size:0.85rem;opacity:0.8;line-height:1.5;">Indica implante zigomático, ortognática ou indicação médica urgente</div>
+      </div>
+      <div class="card-dark" style="border-color:rgba(255,255,255,0.2);">
+        <div style="font-size:1.8rem;margin-bottom:12px;">2️⃣</div>
+        <div style="font-weight:700;margin-bottom:8px;">IA identifica: Premium</div>
+        <div style="font-size:0.85rem;opacity:0.8;line-height:1.5;">FunnelMetrics score ≥8 → Ana envia mensagem com horários do Dr. Leandro</div>
+      </div>
+      <div class="card-dark" style="border-color:rgba(255,255,255,0.2);">
+        <div style="font-size:1.8rem;margin-bottom:12px;">3️⃣</div>
+        <div style="font-weight:700;margin-bottom:8px;">Lead escolhe e agenda</div>
+        <div style="font-size:0.85rem;opacity:0.8;line-height:1.5;">Sistema agenda automaticamente. Dr. Leandro fecha na call ou convida para presencial</div>
+      </div>
+    </div>
+
+    <div class="cta-box anim d4" style="margin-top:36px;background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.25);text-align:left;">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="font-size:2.5rem;">⏱️</div>
+        <div>
+          <div style="font-weight:800;font-size:1.15rem;">Lead Premium → Consulta agendada em &lt;24h</div>
+          <div style="opacity:0.8;margin-top:6px;font-size:0.9rem;">Sem secretária humana. Sem ligação perdida. Sem perda de timing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 8 — FOLLOW-UP x7                  -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-white" id="followup" data-index="7">
+  <div class="g2" style="max-width:1100px;">
+    <div>
+      <div class="section-tag anim">Recuperação de leads</div>
+      <h2 class="anim d1"><span class="teal-text">7 oportunidades</span><br/>para recuperar quem não fechou.</h2>
+      <p class="lead anim d2" style="margin-top:20px;color:var(--muted);">
+        A maioria das vendas acontece após o 5º contato. O sistema faz isso automaticamente, com a mensagem certa no momento certo.
+      </p>
+      <div class="anim d3" style="margin-top:32px;">
+        <div class="blockquote">
+          Se o lead responder a qualquer mensagem de follow-up, a secretária IA retoma a conversa imediatamente — como se nunca tivesse parado.
+        </div>
+        <div class="card" style="margin-top:20px;border-left:4px solid var(--teal);">
+          <div style="font-weight:700;margin-bottom:8px;">Após o 7º follow-up:</div>
+          <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;">Lead vai para lista de reengajamento trimestral. Nenhum lead é descartado permanentemente.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fu-list anim d2">
+      <div class="fu-item">
+        <div class="fu-dot">1</div>
+        <div class="fu-content">
+          <div class="fu-day">2h depois</div>
+          <div class="fu-text">Lembrete suave</div>
+          <div class="fu-sub">Reforço do benefício principal — tom descomplicado</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot">2</div>
+        <div class="fu-content">
+          <div class="fu-day">Dia seguinte, manhã</div>
+          <div class="fu-text">Prova social</div>
+          <div class="fu-sub">Depoimento real de paciente — quebrando a desconfiança</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot">3</div>
+        <div class="fu-content">
+          <div class="fu-day">2 dias depois</div>
+          <div class="fu-text">Quebra de objeção: preço</div>
+          <div class="fu-sub">Parcelamento + cobertura de plano de saúde quando aplicável</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot">4</div>
+        <div class="fu-content">
+          <div class="fu-day">4 dias depois</div>
+          <div class="fu-text">Urgência — agenda limitada</div>
+          <div class="fu-sub">Disponibilidade real do Dr. Leandro — sem pressão artificial</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot">5</div>
+        <div class="fu-content">
+          <div class="fu-day">7 dias depois</div>
+          <div class="fu-text">Nova oferta / incentivo</div>
+          <div class="fu-sub">Avaliação sem custo — última janela de oportunidade</div>
+        </div>
+      </div>
+      <div class="fu-item">
+        <div class="fu-dot">6</div>
+        <div class="fu-content">
+          <div class="fu-day">14 dias depois</div>
+          <div class="fu-text">Pergunta aberta</div>
+          <div class="fu-sub">"O que está impedindo?" — abre negociação real</div>
+        </div>
+      </div>
+      <div class="fu-item" style="padding-bottom:0;">
+        <div class="fu-dot">7</div>
+        <div class="fu-content">
+          <div class="fu-day">21 dias depois</div>
+          <div class="fu-text">Conteúdo de valor — sem venda</div>
+          <div class="fu-sub">Mantém relacionamento para decisão futura</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 9 — PÓS-VENDA                     -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark2" id="posvendas" data-index="8">
+  <div class="bg-grid"></div>
+  <div style="max-width:1100px;width:100%;position:relative;z-index:1;">
+    <div class="section-tag anim">Fidelização automática</div>
+    <h2 class="anim d1">Paciente convertido<br/><span class="teal-text">é só o começo.</span></h2>
+    <p class="lead anim d2" style="margin-top:16px;max-width:600px;">
+      Depois da consulta, o sistema continua trabalhando: reduz no-shows, aumenta aceite de tratamento e gera indicações.
+    </p>
+
+    <div class="g4 anim d3" style="margin-top:40px;">
+      <div class="card-dark">
+        <div style="color:var(--teal);font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">D+0 / D-1 / D0</div>
+        <div style="font-weight:700;margin-bottom:8px;">Confirmação + Lembretes</div>
+        <div style="font-size:0.85rem;opacity:0.7;line-height:1.5;">Agendamento confirmado → lembrete 24h antes → lembrete 2h antes. Reduz no-shows drasticamente.</div>
+      </div>
+      <div class="card-dark">
+        <div style="color:var(--teal);font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">D+1 / D+7</div>
+        <div style="font-weight:700;margin-bottom:8px;">Feedback + Educação</div>
+        <div style="font-size:0.85rem;opacity:0.7;line-height:1.5;">Pergunta sobre a experiência. Envia conteúdo educativo sobre o procedimento — aumenta confiança e aceite do tratamento.</div>
+      </div>
+      <div class="card-dark">
+        <div style="color:var(--teal);font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">D+15 / D+30</div>
+        <div style="font-weight:700;margin-bottom:8px;">Retorno + Upsell</div>
+        <div style="font-size:0.85rem;opacity:0.7;line-height:1.5;">Lembrete de retorno + oferta de procedimento complementar com condição especial para paciente existente.</div>
+      </div>
+      <div class="card-dark">
+        <div style="color:var(--teal);font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">D+90</div>
+        <div style="font-weight:700;margin-bottom:8px;">Programa de Indicação</div>
+        <div style="font-size:0.85rem;opacity:0.7;line-height:1.5;">Um paciente bem acompanhado indica em média 2-3 pessoas. No bucomaxilo, cada indicação vale muito.</div>
+      </div>
+    </div>
+
+    <div class="anim d4" style="margin-top:28px;background:rgba(0,196,167,0.12);border:1px solid rgba(0,196,167,0.25);border-radius:16px;padding:20px 28px;display:flex;align-items:center;gap:20px;">
+      <div style="font-size:2rem;">📊</div>
+      <div style="font-size:0.9rem;line-height:1.6;">Calculando: se a Soluciona fechar <strong>5 pacientes/mês</strong> com ticket médio de <strong>R$20.000</strong>, apenas 1 indicação de cada gera <strong>R$100.000 adicionais/mês</strong> — automaticamente.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 10 — MÉTRICAS                     -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark" id="metricas" data-index="9">
+  <div class="bg-blob" style="width:400px;height:400px;top:50%;right:10%;transform:translateY(-50%);"></div>
+
+  <div class="g2" style="max-width:1100px;position:relative;z-index:1;">
+    <div>
+      <div class="section-tag anim">Visibilidade total</div>
+      <h2 class="anim d1">Você vê tudo.<br/><span class="teal-text">Em tempo real.</span></h2>
+      <p class="lead anim d2" style="margin-top:20px;">
+        Dashboard completo com todas as métricas que importam para tomar decisões de investimento em marketing.
+      </p>
+      <div class="anim d3" style="margin-top:32px;display:flex;flex-direction:column;gap:10px;">
+        <div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.07);font-size:0.9rem;display:flex;align-items:center;gap:12px;"><span style="color:var(--teal);">📊</span> Custo por Lead e Custo por Lead Qualificado</div>
+        <div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.07);font-size:0.9rem;display:flex;align-items:center;gap:12px;"><span style="color:var(--teal);">📅</span> Taxa de agendamento por canal (Google, Instagram)</div>
+        <div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.07);font-size:0.9rem;display:flex;align-items:center;gap:12px;"><span style="color:var(--teal);">🔥</span> Taxa de conversão por nível (Premium, Quente, Morno)</div>
+        <div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.07);font-size:0.9rem;display:flex;align-items:center;gap:12px;"><span style="color:var(--teal);">⏱️</span> Tempo médio de resposta da secretária IA</div>
+        <div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.07);font-size:0.9rem;display:flex;align-items:center;gap:12px;"><span style="color:var(--teal);">🔄</span> Taxa de recuperação dos 7 follow-ups</div>
+      </div>
+    </div>
+
+    <div class="gcol anim d2">
+      <div style="font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;opacity:0.6;margin-bottom:8px;">Antes × Depois (estimado)</div>
+      <div class="metric-row"><div class="m-label">Tempo de resposta ao lead</div><div class="m-before">4–24h</div><div class="m-arrow">→</div><div class="m-after">&lt;2min</div></div>
+      <div class="metric-row"><div class="m-label">Taxa de conversão da LP</div><div class="m-before">5–10%</div><div class="m-arrow">→</div><div class="m-after">20–35%</div></div>
+      <div class="metric-row"><div class="m-label">Follow-ups realizados</div><div class="m-before">0–1</div><div class="m-arrow">→</div><div class="m-after">7 auto</div></div>
+      <div class="metric-row"><div class="m-label">Leads perdidos por demora</div><div class="m-before">~60%</div><div class="m-arrow">→</div><div class="m-after">&lt;10%</div></div>
+      <div class="metric-row"><div class="m-label">Leads Premium contactados</div><div class="m-before">aleatório</div><div class="m-arrow">→</div><div class="m-after">100%</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 11 — IMPLEMENTAÇÃO                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-light" id="implementacao" data-index="10">
+  <div style="max-width:1100px;width:100%;">
+    <div class="section-tag anim">Cronograma</div>
+    <h2 class="anim d1">Do zero ao funcionando<br/><span class="teal-text">em sprints curtos.</span></h2>
+    <p class="lead anim d2" style="max-width:640px;margin-top:16px;color:var(--muted);">
+      Processo estruturado em 6 sprints. Cada sprint entrega valor imediato, sem dependência de sprint anterior para começar a ver resultados.
+    </p>
+
+    <div class="sprint-grid anim d3" style="margin-top:40px;">
+      <div class="sprint-card"><div class="sprint-num">Sprint 1</div><div class="sprint-title">Infraestrutura</div><div class="sprint-desc">VPS, Docker, WhatsApp conectado, banco de dados</div></div>
+      <div class="sprint-card"><div class="sprint-num">Sprint 2</div><div class="sprint-title">Landing Page</div><div class="sprint-desc">LP otimizada + formulário ao ar + pixel de rastreamento</div></div>
+      <div class="sprint-card"><div class="sprint-num">Sprint 3</div><div class="sprint-title">Secretária IA</div><div class="sprint-desc">Ana ativa no WhatsApp — resposta, qualificação e agendamento</div></div>
+      <div class="sprint-card"><div class="sprint-num">Sprint 4</div><div class="sprint-title">Premium Call</div><div class="sprint-desc">Agendamento automático de call com o Dr. Leandro</div></div>
+      <div class="sprint-card"><div class="sprint-num">Sprint 5</div><div class="sprint-title">Follow-up x7</div><div class="sprint-desc">Sequência automática + pós-venda + indicação</div></div>
+      <div class="sprint-card"><div class="sprint-num">Sprint 6</div><div class="sprint-title">Dashboard</div><div class="sprint-desc">FunnelMetrics completo — CPL-Q, ROI por canal em tempo real</div></div>
+    </div>
+
+    <div class="g2 anim d4" style="margin-top:28px;gap:20px;">
+      <div class="card" style="border-left:4px solid var(--teal);">
+        <div style="font-weight:700;margin-bottom:10px;">O que precisamos de você:</div>
+        <div class="check-item"><span class="check-icon">✅</span> Número WhatsApp Business da Soluciona</div>
+        <div class="check-item"><span class="check-icon">✅</span> Acesso à agenda do Dr. Leandro</div>
+        <div class="check-item"><span class="check-icon">✅</span> Fotos, depoimentos e credenciais para a LP</div>
+        <div class="check-item"><span class="check-icon">✅</span> Logo e identidade visual da clínica</div>
+        <div class="check-item"><span class="check-icon">✅</span> Tabela interna de procedimentos</div>
+      </div>
+      <div class="card" style="background:var(--navy2);color:white;">
+        <div style="font-weight:700;margin-bottom:16px;color:var(--teal);">Prazo total:</div>
+        <div style="font-size:3rem;font-weight:900;line-height:1;">6–8 sem.</div>
+        <div style="opacity:0.7;margin-top:8px;font-size:0.9rem;line-height:1.5;">Sistema completo funcionando, da LP ao follow-up automático</div>
+        <div style="margin-top:16px;padding:12px 16px;background:rgba(0,196,167,0.15);border-radius:12px;font-size:0.85rem;color:var(--teal);font-weight:600;">🚀 Primeiros resultados visíveis em 2 semanas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 12 — CTA FINAL                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section s-dark" id="cta" data-index="11">
+  <div class="bg-blob" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="bg-grid"></div>
+
+  <div style="max-width:800px;text-align:center;margin:0 auto;position:relative;z-index:1;">
+    <div class="section-tag anim" style="margin:0 auto 24px;">👑 Próximos passos</div>
+    <h2 class="anim d1">
+      Vamos começar<br/><span class="teal-text">esta semana?</span>
+    </h2>
+
+    <div class="anim d2" style="margin-top:36px;">
+      <div class="cta-box">
+        <div style="display:flex;flex-direction:column;gap:14px;text-align:left;margin-bottom:32px;">
+          <div style="display:flex;align-items:center;gap:14px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">1</div><div style="color:var(--text);">Alinhamento final e assinatura do contrato</div></div>
+          <div style="display:flex;align-items:center;gap:14px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">2</div><div style="color:var(--text);">Reunião de onboarding (2h) — coletamos tudo da clínica</div></div>
+          <div style="display:flex;align-items:center;gap:14px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">3</div><div style="color:var(--text);">Sprint 1 inicia em até 48h após onboarding</div></div>
+          <div style="display:flex;align-items:center;gap:14px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">4</div><div style="color:var(--text);"><strong>Primeiros resultados em 2 semanas</strong></div></div>
+        </div>
+        <a href="lp.html" target="_blank" class="btn btn-teal" style="font-size:1rem;padding:16px 36px;">Ver Landing Page →</a>
+      </div>
+    </div>
+
+    <div class="anim d3" style="margin-top:48px;padding:32px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);">
+      <div style="font-size:1.25rem;font-style:italic;line-height:1.7;opacity:0.9;">
+        "Se você pudesse ter respondido todos os leads dos últimos 3 meses em 2 minutos, com uma secretária especializada em bucomaxilofacial, disponível 24h — <strong style="color:var(--teal);">quantas consultas a mais você teria fechado?</strong>"
+      </div>
+    </div>
+
+    <p class="anim d4" style="margin-top:24px;opacity:0.5;font-size:0.85rem;">
+      É exatamente isso que estamos construindo juntos.
+    </p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCRIPTS                                   -->
+<!-- ═══════════════════════════════════════════ -->
+<script>
+  // Progress bar + dot nav + counter
+  const sections = document.querySelectorAll('.section[data-index]');
+  const dots     = document.querySelectorAll('.dot-nav a');
+  const counter  = document.getElementById('nav-counter');
+  const progBar  = document.getElementById('progress-bar');
+
+  function getActiveSection() {
+    let active = 0;
+    sections.forEach((s, i) => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top <= window.innerHeight * 0.5) active = i;
+    });
+    return active;
+  }
+
+  function updateNav() {
+    const active = getActiveSection();
+    dots.forEach((d, i) => d.classList.toggle('active', i === active));
+    counter.textContent = `${active + 1} / ${sections.length}`;
+    const pct = ((active + 1) / sections.length) * 100;
+    progBar.style.width = pct + '%';
+  }
+
+  // Intersection Observer for animations
+  const animEls = document.querySelectorAll('.anim');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  animEls.forEach(el => obs.observe(el));
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+</script>
+
+</body>
+</html>

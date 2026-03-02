@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo ao Vivo — Secretária IA · Soluciona Odontologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A1628; --teal: #00C4A7; --sky: #38BDF8;
+      --wa-green: #128C7E; --wa-light: #DCF8C6; --wa-bg: #ECE5DD;
+      --wa-dark: #075E54; --wa-msg: #FFFFFF; --wa-time: #999;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--navy) 0%, #0F2142 100%);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 32px 16px;
+    }
+    .page-title {
+      color: white; text-align: center; margin-bottom: 32px;
+    }
+    .page-title h1 { font-size: 1.8rem; font-weight: 800; }
+    .page-title h1 span { color: var(--teal); }
+    .page-title p { color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-top: 8px; }
+
+    /* Phone frame */
+    .phone-wrap {
+      display: flex; gap: 48px; align-items: flex-start;
+      max-width: 900px; width: 100%; flex-wrap: wrap; justify-content: center;
+    }
+    .phone-frame {
+      width: 340px; border-radius: 44px; overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.1);
+      background: #111; flex-shrink: 0;
+    }
+    .phone-notch {
+      background: #111; height: 32px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .phone-notch-inner {
+      width: 100px; height: 14px; background: #000;
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* WhatsApp UI */
+    .wa-app { background: var(--wa-bg); display: flex; flex-direction: column; }
+    .wa-header {
+      background: var(--wa-dark);
+      padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+    }
+    .wa-back { color: white; font-size: 1.1rem; cursor: pointer; }
+    .wa-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+    }
+    .wa-contact-info { flex: 1; }
+    .wa-name { color: white; font-size: 0.95rem; font-weight: 600; }
+    .wa-status { color: rgba(255,255,255,0.7); font-size: 0.72rem; }
+    .wa-icons { display: flex; gap: 16px; color: white; font-size: 1rem; }
+
+    .wa-bg-pattern {
+      height: 400px; overflow-y: auto; padding: 12px 10px;
+      background: var(--wa-bg);
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23d4d4d4' fill-opacity='0.25' d='M0 0h60v60H0z'/%3E%3C/svg%3E");
+      scroll-behavior: smooth;
+    }
+    .wa-bg-pattern::-webkit-scrollbar { width: 4px; }
+    .wa-bg-pattern::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
+
+    /* Date divider */
+    .wa-date-divider {
+      text-align: center; margin: 8px 0;
+    }
+    .wa-date-divider span {
+      background: rgba(255,255,255,0.85); color: #666;
+      font-size: 0.7rem; padding: 3px 10px; border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Messages */
+    .msg { display: flex; margin-bottom: 4px; }
+    .msg.from-them { justify-content: flex-start; }
+    .msg.from-me   { justify-content: flex-end; }
+    .msg-bubble {
+      max-width: 78%; padding: 7px 10px 18px;
+      border-radius: 8px; position: relative; font-size: 0.82rem;
+      line-height: 1.45; box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    }
+    .from-them .msg-bubble {
+      background: var(--wa-msg); border-top-left-radius: 0;
+    }
+    .from-me .msg-bubble {
+      background: var(--wa-light); border-top-right-radius: 0;
+    }
+    .msg-time {
+      position: absolute; bottom: 4px; right: 8px;
+      font-size: 0.62rem; color: var(--wa-time); white-space: nowrap;
+    }
+    .from-me .msg-time { color: #7EA57A; }
+    .msg-check { color: #53BDEB; margin-left: 2px; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: none; margin: 4px 0 4px 0;
+      align-items: center; gap: 8px;
+    }
+    .typing-indicator.show { display: flex; }
+    .typing-bubble {
+      background: var(--wa-msg); padding: 10px 14px; border-radius: 8px;
+      border-top-left-radius: 0; display: flex; gap: 4px; align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    }
+    .typing-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #aaa;
+      animation: typingAnim 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingAnim {
+      0%,60%,100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-4px); }
+    }
+
+    /* Input bar */
+    .wa-input-bar {
+      background: #f0f0f0; padding: 8px 10px; display: flex;
+      align-items: center; gap: 8px;
+    }
+    .wa-input {
+      flex: 1; background: white; border: none; border-radius: 20px;
+      padding: 9px 14px; font-size: 0.82rem; outline: none; color: #333;
+    }
+    .wa-send {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--wa-green); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: white;
+    }
+    .phone-home-bar {
+      background: #111; height: 24px; display: flex; align-items: center; justify-content: center;
+    }
+    .phone-home-indicator {
+      width: 100px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 3px;
+    }
+
+    /* Side panel */
+    .side-panel { flex: 1; min-width: 260px; max-width: 380px; }
+    .side-title {
+      color: white; font-weight: 700; font-size: 1rem; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    }
+    .info-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .info-value { color: white; font-size: 0.9rem; line-height: 1.5; }
+    .info-value strong { color: var(--teal); }
+    .step-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .step-active { background: rgba(0,196,167,0.2); color: var(--teal); border: 1px solid rgba(0,196,167,0.3); }
+    .step-done   { background: rgba(16,185,129,0.15); color: #10B981; border: 1px solid rgba(16,185,129,0.3); }
+    .step-pending{ background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+    .step-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+    .step-name { font-size: 0.85rem; color: rgba(255,255,255,0.75); }
+    .step-num-circle {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    }
+    .active-step  { background: var(--teal); color: white; }
+    .done-step    { background: #10B981; color: white; }
+    .pending-step { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+
+    /* Controls */
+    .controls {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px;
+    }
+    .btn-ctrl {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 100px; font-weight: 600;
+      font-size: 0.85rem; cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-play    { background: var(--teal); color: white; }
+    .btn-play:hover { background: #00A98F; }
+    .btn-pause   { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-pause:hover { background: rgba(255,255,255,0.15); }
+    .btn-restart { background: transparent; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.15); }
+    .btn-restart:hover { color: white; border-color: rgba(255,255,255,0.3); }
+    #play-btn  { display: inline-flex; }
+    #pause-btn { display: none; }
+
+    .speed-label { color: rgba(255,255,255,0.5); font-size: 0.78rem; margin-top: 12px; }
+    .speed-btns  { display: flex; gap: 8px; margin-top: 8px; }
+    .speed-btn {
+      padding: 4px 14px; border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent;
+      color: rgba(255,255,255,0.5); transition: all 0.2s;
+    }
+    .speed-btn.active { background: rgba(0,196,167,0.2); color: var(--teal); border-color: rgba(0,196,167,0.4); }
+
+    .back-link {
+      color: rgba(255,255,255,0.5); font-size: 0.85rem; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: white; }
+
+    @media (max-width: 700px) {
+      .phone-frame { width: 100%; max-width: 360px; }
+      .side-panel { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">← Voltar para apresentação</a>
+
+<div class="page-title">
+  <h1>Demo ao Vivo — <span>Secretária IA</span></h1>
+  <p>Veja como a Ana atende um paciente Premium da Soluciona Odontologia</p>
+</div>
+
+<div class="phone-wrap">
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+    <div class="wa-app">
+
+      <!-- WA Header -->
+      <div class="wa-header">
+        <div class="wa-back">←</div>
+        <div class="wa-avatar">M</div>
+        <div class="wa-contact-info">
+          <div class="wa-name">Marco Costa</div>
+          <div class="wa-status" id="wa-status">online</div>
+        </div>
+        <div class="wa-icons">📞 ⋮</div>
+      </div>
+
+      <!-- Chat area -->
+      <div class="wa-bg-pattern" id="chat-area">
+        <div class="wa-date-divider"><span>Hoje</span></div>
+        <!-- Messages will be injected here -->
+        <div class="typing-indicator" id="typing">
+          <div class="wa-avatar" style="width:28px;height:28px;font-size:0.7rem;flex-shrink:0;">A</div>
+          <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="wa-input-bar">
+        <span style="font-size:1.2rem;color:#999;">😊</span>
+        <input class="wa-input" placeholder="Mensagem" readonly />
+        <span style="font-size:1.2rem;color:#999;">📎</span>
+        <button class="wa-send">▶</button>
+      </div>
+    </div>
+    <div class="phone-home-bar"><div class="phone-home-indicator"></div></div>
+  </div>
+
+  <!-- Side Panel -->
+  <div class="side-panel">
+    <div class="side-title">🎬 Contexto da conversa</div>
+
+    <div class="info-card">
+      <div class="info-label">Lead</div>
+      <div class="info-value"><strong>Marco Costa</strong></div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Procedimento de interesse</div>
+      <div class="info-value"><strong>Implante Zigomático</strong><br/><span style="font-size:0.82rem;opacity:0.7;">Ticket estimado: R$30k–50k</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Origem</div>
+      <div class="info-value">Indicação do dentista <strong style="color:var(--teal);">+2pts</strong></div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Score FunnelMetrics</div>
+      <div class="info-value" style="font-size:1.4rem;font-weight:900;color:var(--teal);">9/10 <span style="font-size:0.85rem;opacity:0.7;">🔥 PREMIUM</span></div>
+    </div>
+
+    <div class="side-title" style="margin-top:8px;">📍 Etapa atual</div>
+    <div id="steps-panel">
+      <div class="step-row" id="step-0"><div class="step-num-circle pending-step">1</div><div class="step-name">Abertura e qualificação</div></div>
+      <div class="step-row" id="step-1"><div class="step-num-circle pending-step">2</div><div class="step-name">Oferta de call Premium</div></div>
+      <div class="step-row" id="step-2"><div class="step-num-circle pending-step">3</div><div class="step-name">Lead escolhe horário</div></div>
+      <div class="step-row" id="step-3"><div class="step-num-circle pending-step">4</div><div class="step-name">Agendamento confirmado ✅</div></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-ctrl btn-play" id="play-btn" onclick="startDemo()">▶ Iniciar demo</button>
+      <button class="btn-ctrl btn-pause" id="pause-btn" onclick="pauseDemo()">⏸ Pausar</button>
+      <button class="btn-ctrl btn-restart" onclick="restartDemo()">↺ Reiniciar</button>
+    </div>
+
+    <div class="speed-label">Velocidade:</div>
+    <div class="speed-btns">
+      <button class="speed-btn" onclick="setSpeed(2)">0.5×</button>
+      <button class="speed-btn active" onclick="setSpeed(1)">1×</button>
+      <button class="speed-btn" onclick="setSpeed(0.5)">2×</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const chatArea  = document.getElementById('chat-area');
+  const typing    = document.getElementById('typing');
+  const waStatus  = document.getElementById('wa-status');
+  let   speedMult = 1;
+  let   paused    = false;
+  let   stopFlag  = false;
+  let   currentStep = -1;
+
+  // Conversation script
+  const CONV = [
+    // step index, side, time, text
+    { step:0, from:'me',   time:'20:03', text:'Olá, vim pelo formulário do site. Tenho interesse em implante zigomático.' },
+    { step:0, from:'them', time:'20:04', typing:2200, text:'Oi Marco! 😊 Sou a Ana, assistente do Dr. Leandro Cardoso na Soluciona Odontologia.\n\nVi aqui que você tem interesse em Implante Zigomático — ótimo que você entrou em contato! Pode me contar um pouco mais sobre o seu caso?' },
+    { step:0, from:'me',   time:'20:05', text:'Fui indicado pelo meu dentista. Já perdi muito osso e ele disse que só zigomático resolve.' },
+    { step:1, from:'them', time:'20:05', typing:1800, text:'Entendi, Marco! Indicação de dentista já é um excelente sinal — o caso está bem identificado. 🦷\n\nSeu caso é exatamente a especialidade do Dr. Leandro! Para garantir as melhores orientações desde o início, ele separou alguns horários para uma conversa rápida de 30 minutos diretamente com você.\n\nVeja as opções disponíveis:\n\n1️⃣ Amanhã, seg, às 10h\n2️⃣ Amanhã, seg, às 15h\n3️⃣ Terça às 11h\n\nQual desses horários funciona melhor pra você?' },
+    { step:2, from:'me',   time:'20:07', text:'Amanhã às 10h está ótimo!' },
+    { step:3, from:'them', time:'20:07', typing:1500, text:'Perfeito, Marco! ✅\n\nConfirmei sua conversa com o Dr. Leandro Cardoso para amanhã, segunda-feira, às 10h.\n\nVocê vai receber um link de videochamada por aqui. Se precisar remarcar, é só me avisar neste mesmo número!\n\nAté amanhã! 😊' },
+  ];
+
+  function setSpeed(mult) {
+    speedMult = mult;
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => {
+      const id = setInterval(() => {
+        if (!paused && !stopFlag) { clearInterval(id); resolve(); }
+        if (stopFlag) { clearInterval(id); resolve(); }
+      }, 50);
+    });
+  }
+
+  function delay(ms) { return sleep(ms * speedMult); }
+
+  function setStep(idx) {
+    for (let i = 0; i < 4; i++) {
+      const row = document.getElementById('step-' + i);
+      const circle = row.querySelector('.step-num-circle');
+      circle.className = 'step-num-circle ' + (i < idx ? 'done-step' : i === idx ? 'active-step' : 'pending-step');
+    }
+  }
+
+  function appendMsg(msg) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (msg.from === 'me' ? 'from-me' : 'from-them');
+    const text = msg.text.replace(/\n/g, '<br/>');
+    const checkmark = msg.from === 'me' ? `<span class="msg-check">✓✓</span>` : '';
+    div.innerHTML = `<div class="msg-bubble">${text}<span class="msg-time">${msg.time}${checkmark}</span></div>`;
+    chatArea.insertBefore(div, typing);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  async function startDemo() {
+    document.getElementById('play-btn').style.display  = 'none';
+    document.getElementById('pause-btn').style.display = 'inline-flex';
+    paused   = false;
+    stopFlag = false;
+
+    for (const msg of CONV) {
+      if (stopFlag) break;
+      setStep(msg.step);
+
+      if (msg.from === 'them') {
+        // Show typing indicator
+        waStatus.textContent = 'digitando...';
+        typing.classList.add('show');
+        chatArea.scrollTop = chatArea.scrollHeight;
+        await delay(msg.typing || 1600);
+        typing.classList.remove('show');
+        waStatus.textContent = 'online';
+      } else {
+        await delay(600);
+      }
+
+      if (!stopFlag) {
+        appendMsg(msg);
+        await delay(msg.from === 'me' ? 900 : 1200);
+      }
+    }
+
+    setStep(4);
+    document.getElementById('play-btn').style.display  = 'inline-flex';
+    document.getElementById('pause-btn').style.display = 'none';
+    document.getElementById('play-btn').textContent = '▶ Replay';
+  }
+
+  function pauseDemo() {
+    paused = !paused;
+    document.getElementById('pause-btn').textContent = paused ? '▶ Continuar' : '⏸ Pausar';
+  }
+
+  function restartDemo() {
+    stopFlag = true;
+    paused   = false;
+    setTimeout(() => {
+      // Clear messages
+      const msgs = chatArea.querySelectorAll('.msg');
+      msgs.forEach(m => m.remove());
+      typing.classList.remove('show');
+      waStatus.textContent = 'online';
+      setStep(-1);
+      stopFlag = false;
+      document.getElementById('play-btn').style.display  = 'inline-flex';
+      document.getElementById('pause-btn').style.display = 'none';
+      document.getElementById('play-btn').textContent    = '▶ Iniciar demo';
+    }, 200);
+  }
+
+  // Init step styles
+  setStep(-1);
+</script>
+
+</body>
+</html>
