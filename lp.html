@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1D1D1F" />
   <title>Soluciona Odontologia — Transforme Seu Sorriso · Zona Sul, São Paulo</title>
   <meta name="description" content="Facetas, lentes de contato dental, implantes e muito mais. Avaliação gratuita. Zona Sul, São Paulo." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -353,17 +354,179 @@
     .wa-float:hover { transform: scale(1.08); }
 
     /* ─────────────── RESPONSIVE ─────────────── */
+    /* ─────────────── TABLET ─────────────── */
     @media (max-width: 1100px) {
-      .navbar, .trust, .footer { padding-left: 24px; padding-right: 24px; }
-      .wrap, .wrap-sm { padding-left: 24px; padding-right: 24px; }
-      .hero-grid, .cta-grid, .doctor-grid { grid-template-columns: 1fr; }
+      .navbar, .trust, .footer { padding-left: 32px; padding-right: 32px; }
+      .wrap, .wrap-sm { padding-left: 32px; padding-right: 32px; }
+      .hero-grid, .cta-grid { grid-template-columns: 1fr; }
       .hero { padding-bottom: var(--s6); }
+      .doctor-grid { grid-template-columns: 180px 1fr; gap: var(--s4); }
     }
+
+    /* ─────────────── MOBILE ─────────────── */
     @media (max-width: 768px) {
-      .obj-grid, .testi-grid { grid-template-columns: 1fr; }
-      .step { grid-template-columns: 52px 1fr; gap: var(--s3); }
-      .t-hero { font-size: 2.4rem; }
-      .t-h2   { font-size: 1.9rem; }
+
+      /* Layout base */
+      .navbar, .trust, .footer { padding-left: 20px; padding-right: 20px; }
+      .wrap, .wrap-sm { padding-left: 20px; padding-right: 20px; }
+      .section    { padding: 64px 0; }
+      .section-md { padding: 52px 0; }
+
+      /* Navbar */
+      .navbar { height: 48px; }
+      .logo-name { font-size: 0.82rem; }
+      .nav-btn { padding: 6px 14px; font-size: 0.75rem; }
+
+      /* Type */
+      .t-hero { font-size: 2.2rem; line-height: 1.06; letter-spacing: -0.025em; }
+      .t-h2   { font-size: 1.75rem; line-height: 1.1;  letter-spacing: -0.025em; }
+      .t-h3   { font-size: 1.15rem; }
+      .t-body-lg { font-size: 1rem; }
+
+      /* Hero */
+      .hero { padding-top: 72px; padding-bottom: 56px; }
+      .hero-grid { grid-template-columns: 1fr; gap: var(--s4); }
+      .hero-proof { flex-direction: column; align-items: flex-start; gap: var(--s1); }
+      .proof-label { font-size: 0.8rem; }
+
+      /* Form card */
+      .form-card { padding: 24px 20px; border-radius: var(--r-lg); }
+      /* CRITICAL: font-size 16px prevents iOS auto-zoom */
+      .form-input, .form-select {
+        font-size: 16px !important;
+        min-height: 48px;
+        padding: 12px 14px;
+        border-radius: var(--r-sm);
+      }
+      .form-cta {
+        min-height: 52px;
+        font-size: 1rem;
+        border-radius: var(--r-pill);
+      }
+      .form-title  { font-size: 1.1rem; }
+
+      /* Trust strip */
+      .trust { padding: 16px 20px; }
+      .trust-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 16px;
+        justify-items: start;
+      }
+
+      /* Buttons full-width on mobile */
+      .btn-hero-mobile {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* Agitate */
+      .pain-row { padding: 13px 15px; gap: 12px; }
+      .pain-copy { font-size: 0.88rem; }
+
+      /* Solution */
+      .step { grid-template-columns: 48px 1fr; gap: 16px; padding: var(--s3) 0; }
+      .step-num { width: 44px; height: 44px; font-size: 1rem; }
+      .step-h { font-size: 1.15rem; }
+      .step-body { font-size: 0.9rem; }
+
+      /* Objections */
+      .obj-grid { grid-template-columns: 1fr; gap: 16px; }
+      .obj-card { padding: 28px 22px; }
+
+      /* Testimonials — horizontal scroll com snap (padrão mobile premium) */
+      .testi-grid {
+        grid-template-columns: repeat(3, calc(82vw - 40px));
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 14px;
+        padding-bottom: 14px;
+        /* esconde a scrollbar mas mantém funcional */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .testi-grid::-webkit-scrollbar { display: none; }
+      .testi-card { scroll-snap-align: start; flex-shrink: 0; }
+      .testi-hint {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        color: var(--c-gray-2);
+        margin-top: 10px;
+      }
+      .testi-hint-dots {
+        display: flex; gap: 4px;
+      }
+      .testi-hint-dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--c-gray-4);
+      }
+      .testi-hint-dot.active { background: var(--c-teal); }
+
+      /* CTA section */
+      .cta-grid { grid-template-columns: 1fr; gap: var(--s4); }
+      .cta-section .form-card { box-shadow: none; border: 1px solid rgba(255,255,255,0.12); }
+
+      /* Doctor */
+      .doctor-grid { grid-template-columns: 1fr; gap: var(--s3); }
+      .doctor-photo { width: 120px; height: 140px; font-size: 2.5rem; border-radius: var(--r-lg); }
+      .doctor-name { font-size: 1.4rem; }
+
+      /* Footer */
+      .footer { padding: 24px 20px; }
+      .footer-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+      /* WA float sobe para não conflitar com sticky bar */
+      .wa-float { bottom: 76px; right: 18px; width: 48px; height: 48px; font-size: 1.2rem; }
+
+      /* Sticky CTA bar — mobile only */
+      .sticky-bar {
+        display: flex;
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+        background: white;
+        padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--c-gray-4);
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        pointer-events: none;
+      }
+      .sticky-bar.visible {
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .sticky-bar .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 50px;
+        font-size: 1rem;
+        background: var(--c-teal);
+        color: white;
+      }
+      .sticky-bar .btn:hover { background: var(--c-teal-dark); }
+
+      /* Espaço extra no final da página para a sticky bar */
+      .footer { padding-bottom: calc(24px + 80px + env(safe-area-inset-bottom)); }
+    }
+
+    /* ─────────────── DESKTOP: esconde sticky bar ─────────────── */
+    @media (min-width: 769px) {
+      .sticky-bar  { display: none !important; }
+      .testi-hint  { display: none; }
+    }
+
+    /* ─────────────── ACESSIBILIDADE ─────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      html { scroll-behavior: auto; }
+    }
+    :focus-visible {
+      outline: 2px solid var(--c-teal);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -394,7 +557,7 @@
         <p class="t-body-lg" style="margin-top:var(--s3);max-width:500px;">
           Você sabe que tem um sorriso bonito esperando aparecer. Amigas já fizeram, viram a diferença e nunca mais pararam de sorrir. Agora é a sua vez — e é mais simples e acessível do que você imagina.
         </p>
-        <a href="#cta" class="btn btn-teal btn-lg" style="margin-top:var(--s4);">
+        <a href="#cta" class="btn btn-teal btn-lg btn-hero-mobile" style="margin-top:var(--s4);">
           Quero conhecer meu novo sorriso →
         </a>
         <div class="hero-proof">
@@ -711,7 +874,23 @@
       e.target.value = v;
     });
   });
+
+  // Sticky CTA bar — show when CTA section is NOT in viewport
+  (function() {
+    var ctaSection = document.getElementById('cta');
+    var stickyBar  = document.getElementById('sticky-bar');
+    if (!ctaSection || !stickyBar) return;
+    var obs = new IntersectionObserver(function(entries) {
+      stickyBar.classList.toggle('visible', !entries[0].isIntersecting);
+    }, { threshold: 0.15 });
+    obs.observe(ctaSection);
+  })();
 </script>
+
+<!-- Sticky bottom CTA bar (mobile only) -->
+<div class="sticky-bar" id="sticky-bar">
+  <a href="#cta" class="btn">Quero meu novo sorriso →</a>
+</div>
 
 </body>
 </html>
