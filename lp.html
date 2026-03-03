@@ -3,536 +3,713 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soluciona Odontologia — Transforme seu Sorriso · Zona Sul, São Paulo</title>
-  <meta name="description" content="Soluciona Odontologia — implantes, facetas, lentes, canal, próteses e muito mais. Avaliação gratuita. Zona Sul, São Paulo." />
+  <title>Soluciona Odontologia — Transforme Seu Sorriso · Zona Sul, São Paulo</title>
+  <meta name="description" content="Facetas, lentes de contato dental, implantes e muito mais. Avaliação gratuita. Zona Sul, São Paulo." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ─────────────────────────────
+       DESIGN TOKENS — Apple System
+    ───────────────────────────── */
     :root {
-      --navy: #0A1628; --navy2: #0F2142;
-      --teal: #00C4A7; --teal2: #00A98F;
-      --sky:  #38BDF8; --light: #F0FFFE;
-      --white: #FFFFFF; --text: #1E293B; --muted: #64748B;
-      --border: rgba(0,0,0,0.08);
-    }
-    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
-    body { background: var(--white); color: var(--text); }
-    img  { max-width: 100%; }
+      /* Apple Color Palette */
+      --c-black:      #1D1D1F;
+      --c-gray-1:     #6E6E73;
+      --c-gray-2:     #86868B;
+      --c-gray-3:     #F5F5F7;
+      --c-gray-4:     #E8E8ED;
+      --c-white:      #FFFFFF;
 
-    /* ── NAV ── */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(10,22,40,0.95); backdrop-filter: blur(10px);
-      padding: 14px 64px; display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-badge {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--teal), var(--sky));
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-weight: 900; font-size: 1rem;
-    }
-    .logo-name { color: white; font-weight: 700; font-size: 0.95rem; }
-    .logo-name span { color: var(--teal); }
-    .nav-cta {
-      background: var(--teal); color: white; padding: 10px 22px;
-      border-radius: 100px; font-weight: 600; font-size: 0.85rem;
-      text-decoration: none; transition: background 0.2s;
-    }
-    .nav-cta:hover { background: var(--teal2); }
+      /* Brand */
+      --c-teal:       #00BFA5;
+      --c-teal-dark:  #009E8C;
+      --c-teal-10:    rgba(0,191,165,0.10);
+      --c-teal-20:    rgba(0,191,165,0.20);
 
-    /* ── SECTIONS ── */
-    section { padding: 80px 64px; }
-    .container { max-width: 1100px; margin: 0 auto; width: 100%; }
+      /* Dark surface */
+      --c-dark:       #1D1D1F;
+      --c-dark-2:     #2C2C2E;
+      --c-dark-3:     #3A3A3C;
+      --c-dark-line:  rgba(255,255,255,0.08);
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh; background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #0E3A6B 100%);
-      display: flex; align-items: center; padding: 120px 64px 80px; position: relative; overflow: hidden;
+      /* Apple-style amber for stars */
+      --c-amber:      #FF9F0A;
+
+      /* Typography */
+      --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter',
+              'Helvetica Neue', Arial,
+              'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
+              sans-serif;
+
+      /* Spacing scale */
+      --s1:  8px;  --s2: 16px; --s3: 24px; --s4: 32px;
+      --s5: 48px;  --s6: 64px; --s7: 80px; --s8: 120px;
+
+      /* Radius */
+      --r-xs:   6px;
+      --r-sm:  10px;
+      --r-md:  16px;
+      --r-lg:  22px;
+      --r-xl:  28px;
+      --r-pill: 9999px;
+
+      /* Shadows */
+      --sh-xs: 0 1px 4px  rgba(0,0,0,0.05);
+      --sh-sm: 0 2px 12px rgba(0,0,0,0.07);
+      --sh-md: 0 4px 24px rgba(0,0,0,0.09);
+      --sh-lg: 0 8px 40px rgba(0,0,0,0.13);
+      --sh-xl: 0 20px 60px rgba(0,0,0,0.18);
     }
-    .hero-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        radial-gradient(ellipse 600px 600px at 80% 50%, rgba(0,196,167,0.12) 0%, transparent 70%),
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: auto, 40px 40px, 40px 40px;
+
+    /* ─────────────── RESET ─────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html  { scroll-behavior: smooth; font-family: var(--font); }
+    body  { background: var(--c-white); color: var(--c-black);
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    img   { max-width: 100%; display: block; }
+    a     { color: inherit; text-decoration: none; }
+
+    /* ─────────────── LAYOUT ─────────────── */
+    .wrap     { max-width: 1080px; margin: 0 auto; width: 100%; padding: 0 64px; }
+    .wrap-sm  { max-width:  720px; margin: 0 auto; width: 100%; padding: 0 64px; }
+    .section  { padding: var(--s8) 0; }
+    .section-md { padding: var(--s7) 0; }
+
+    /* ─────────────── TYPE SCALE ─────────────── */
+    .t-eyebrow {
+      font-size: 0.73rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--c-teal);
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: var(--s2);
     }
-    .hero-content { position: relative; z-index: 1; max-width: 680px; }
-    .hero-badge {
+    .t-hero {
+      font-size: clamp(2.8rem, 5.5vw, 5.4rem);
+      font-weight: 800; line-height: 1.03; letter-spacing: -0.035em;
+    }
+    .t-h2 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-weight: 800; line-height: 1.06; letter-spacing: -0.03em;
+    }
+    .t-h3  { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .t-body-lg { font-size: 1.1rem;  line-height: 1.72; color: var(--c-gray-1); }
+    .t-body    { font-size: 0.97rem; line-height: 1.7;  color: var(--c-gray-1); }
+    .t-sm      { font-size: 0.85rem; line-height: 1.6;  color: var(--c-gray-1); }
+    .t-xs      { font-size: 0.75rem; line-height: 1.5;  color: var(--c-gray-2); }
+    .c-teal    { color: var(--c-teal); }
+    .c-white   { color: var(--c-white); }
+    .c-black   { color: var(--c-black); }
+
+    /* ─────────────── BUTTONS ─────────────── */
+    .btn {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,196,167,0.15); color: var(--teal);
-      padding: 6px 14px; border-radius: 100px;
-      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 28px;
-      border: 1px solid rgba(0,196,167,0.3);
+      padding: 15px 30px; border-radius: var(--r-pill);
+      font-family: var(--font); font-size: 0.97rem; font-weight: 600;
+      letter-spacing: -0.01em; cursor: pointer; border: none;
+      transition: all 0.18s ease;
     }
-    .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900;
-      line-height: 1.1; letter-spacing: -0.02em; color: white;
-      margin-bottom: 24px;
-    }
-    .hero h1 span { color: var(--teal); }
-    .hero p {
-      font-size: 1.1rem; line-height: 1.7; color: rgba(255,255,255,0.8);
-      margin-bottom: 40px; max-width: 560px;
-    }
-    .hero-stats {
-      display: flex; gap: 32px; flex-wrap: wrap; margin-top: 48px;
-      padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .hero-stat-num { font-size: 2rem; font-weight: 900; color: var(--teal); line-height: 1; }
-    .hero-stat-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
-    .hero-form-wrap {
-      position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
-      z-index: 2;
-    }
+    .btn-teal   { background: var(--c-teal);  color: white; }
+    .btn-teal:hover { background: var(--c-teal-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,191,165,0.32); }
+    .btn-dark   { background: var(--c-black); color: white; }
+    .btn-dark:hover { background: #2c2c2e; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.22); }
+    .btn-lg { padding: 17px 36px; font-size: 1.02rem; }
 
-    /* ── FORM ── */
+    /* ─────────────── NAVBAR ─────────────── */
+    .navbar {
+      position: fixed; inset: 0 0 auto 0; z-index: 200;
+      height: 52px; padding: 0 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-teal), #38BDF8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 900; color: white; letter-spacing: -0.02em;
+    }
+    .logo-name { font-size: 0.88rem; font-weight: 600; letter-spacing: -0.01em; }
+    .logo-name span { color: var(--c-teal); }
+    .nav-btn {
+      background: var(--c-black); color: white;
+      padding: 7px 18px; border-radius: var(--r-pill);
+      font-size: 0.8rem; font-weight: 500; letter-spacing: -0.01em;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover { background: #333; }
+
+    /* ─────────────── HERO ─────────────── */
+    .hero {
+      min-height: 100vh; padding-top: 92px; padding-bottom: var(--s8);
+      background: var(--c-white);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 400px;
+      gap: var(--s7); align-items: center;
+    }
+    .hero-proof {
+      display: flex; align-items: center; gap: var(--s2);
+      margin-top: var(--s5); padding-top: var(--s5);
+      border-top: 1px solid var(--c-gray-4);
+    }
+    .proof-faces { display: flex; }
+    .proof-face {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 2px solid white; margin-left: -9px;
+      background: linear-gradient(135deg, var(--c-teal), #38BDF8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 800; color: white;
+    }
+    .proof-face:first-child { margin-left: 0; }
+    .proof-label { font-size: 0.83rem; color: var(--c-gray-1); }
+    .proof-label strong { color: var(--c-black); font-weight: 700; }
+
+    /* ─────────────── FORM CARD ─────────────── */
     .form-card {
-      background: white; border-radius: 24px; padding: 36px 32px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.25); width: 380px;
+      background: white; border-radius: var(--r-xl);
+      box-shadow: var(--sh-xl); padding: 32px 28px;
+      border: 1px solid var(--c-gray-4);
     }
-    .form-card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 6px; }
-    .form-card p  { font-size: 0.85rem; color: var(--muted); margin-bottom: 24px; }
-    .form-group  { margin-bottom: 14px; }
-    .form-label  { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-urgency-badge {
+      background: linear-gradient(135deg, var(--c-teal-10), rgba(56,189,248,0.08));
+      border: 1px solid var(--c-teal-20);
+      border-radius: var(--r-sm); padding: 9px 14px;
+      font-size: 0.76rem; font-weight: 600; color: var(--c-teal);
+      margin-bottom: var(--s3); text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .form-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .form-subtitle { font-size: 0.8rem; color: var(--c-gray-1); margin-bottom: var(--s3); }
+    .form-group { margin-bottom: 11px; }
+    .form-label {
+      display: block; font-size: 0.76rem; font-weight: 600;
+      color: var(--c-black); margin-bottom: 5px; letter-spacing: -0.005em;
+    }
     .form-input, .form-select {
-      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
-      border-radius: 12px; font-size: 0.88rem; font-family: inherit;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-      background: var(--white); color: var(--text); appearance: none;
+      width: 100%; padding: 10px 13px;
+      border: 1.5px solid var(--c-gray-4); border-radius: var(--r-sm);
+      font-size: 0.87rem; font-family: var(--font);
+      outline: none; background: white; color: var(--c-black);
+      appearance: none; transition: border-color 0.15s, box-shadow 0.15s;
     }
+    .form-input::placeholder { color: var(--c-gray-2); }
     .form-input:focus, .form-select:focus {
-      border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,196,167,0.12);
+      border-color: var(--c-teal);
+      box-shadow: 0 0 0 3px rgba(0,191,165,0.12);
     }
-    .form-btn {
-      width: 100%; padding: 14px; border: none; border-radius: 100px;
-      background: linear-gradient(135deg, var(--teal), var(--sky));
-      color: white; font-weight: 700; font-size: 1rem; cursor: pointer;
-      margin-top: 8px; transition: all 0.2s;
+    .form-cta {
+      width: 100%; padding: 14px; border: none; border-radius: var(--r-pill);
+      background: var(--c-black); color: white;
+      font-weight: 700; font-size: 0.97rem; cursor: pointer;
+      font-family: var(--font); letter-spacing: -0.01em;
+      margin-top: var(--s1); transition: all 0.18s;
     }
-    .form-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,196,167,0.4); }
-    .form-disclaimer { font-size: 0.72rem; color: var(--muted); text-align: center; margin-top: 12px; }
-    .form-urgency {
-      background: rgba(0,196,167,0.08); border: 1px solid rgba(0,196,167,0.2);
-      border-radius: 10px; padding: 10px 14px; font-size: 0.8rem;
-      color: var(--teal); font-weight: 600; text-align: center; margin-bottom: 16px;
+    .form-cta:hover { background: #2c2c2e; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .form-fine {
+      font-size: 0.68rem; color: var(--c-gray-2);
+      text-align: center; margin-top: 10px; line-height: 1.5;
     }
-    .form-urgency span { color: var(--red, #EF4444); }
 
-    /* ── TRUST STRIP ── */
-    .trust-strip {
-      background: var(--light); padding: 32px 64px;
+    /* ─────────────── TRUST STRIP ─────────────── */
+    .trust {
+      background: var(--c-gray-3);
+      border-top: 1px solid var(--c-gray-4);
+      border-bottom: 1px solid var(--c-gray-4);
+      padding: 18px 64px;
     }
-    .trust-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: flex; gap: 40px; flex-wrap: wrap; align-items: center; justify-content: center;
+    .trust-row {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 24px 40px;
+      align-items: center; justify-content: center;
     }
     .trust-item {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 0.9rem; font-weight: 600; color: var(--navy2);
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.8rem; font-weight: 500; color: var(--c-black);
     }
-    .trust-icon { font-size: 1.3rem; }
+    .trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--c-teal); flex-shrink: 0; }
 
-    /* ── SERVICES ── */
-    .services { background: var(--white); }
-    .section-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,196,167,0.1); color: var(--teal);
-      padding: 6px 14px; border-radius: 100px;
-      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 20px;
-      border: 1px solid rgba(0,196,167,0.25);
+    /* ─────────────── AGITATE (dark) ─────────────── */
+    .agitate { background: var(--c-dark); }
+    .agitate .t-h2 { color: white; }
+    .agitate .t-body-lg { color: rgba(255,255,255,0.65); }
+    .agitate .t-eyebrow { color: rgba(0,191,165,0.8); }
+    .pains { margin-top: var(--s4); display: flex; flex-direction: column; gap: 12px; }
+    .pain-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 15px 18px; border-radius: var(--r-md);
+      background: var(--c-dark-2); border: 1px solid var(--c-dark-line);
     }
-    h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.15; }
-    h2 span { color: var(--teal); }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
-    .service-card {
-      background: white; border: 1px solid var(--border); border-radius: 20px;
-      padding: 28px; transition: all 0.2s;
-    }
-    .service-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-4px); border-color: rgba(0,196,167,0.3); }
-    .service-icon { font-size: 2rem; margin-bottom: 14px; }
-    .service-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-    .service-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-    .service-tag {
-      display: inline-block; margin-top: 14px;
-      background: rgba(0,196,167,0.1); color: var(--teal);
-      padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 600;
-    }
+    .pain-emoji { font-size: 1.05rem; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+    .pain-copy  { font-size: 0.92rem; line-height: 1.55; color: rgba(255,255,255,0.82); }
+    .agitate-foot { margin-top: var(--s5); text-align: center; }
+    .agitate-relief { font-size: 0.97rem; font-weight: 500; color: var(--c-teal); margin-bottom: var(--s3); }
 
-    /* ── DOCTOR ── */
-    .doctor { background: var(--navy); color: white; }
-    .doctor-inner {
-      display: flex; gap: 64px; align-items: center; flex-wrap: wrap;
+    /* ─────────────── SOLUTION ─────────────── */
+    .solution { background: var(--c-white); }
+    .steps { margin-top: var(--s5); }
+    .step {
+      display: grid; grid-template-columns: 64px 1fr; gap: var(--s4);
+      align-items: flex-start; padding: var(--s4) 0;
+      border-bottom: 1px solid var(--c-gray-4);
     }
-    .doctor-photo {
-      width: 280px; height: 340px; border-radius: 24px; flex-shrink: 0;
-      background: linear-gradient(135deg, #0F2142, #0E3A6B);
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--c-black); color: white; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      border: 2px solid rgba(0,196,167,0.3); font-size: 6rem;
+      font-weight: 900; font-size: 1.2rem; letter-spacing: -0.03em;
     }
-    .doctor-name { font-size: 2rem; font-weight: 900; margin-bottom: 4px; }
-    .doctor-cro  { color: var(--teal); font-size: 0.9rem; font-weight: 600; margin-bottom: 20px; }
-    .doctor-bio  { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.8); max-width: 500px; }
-    .cred-list   { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
-    .cred-item   { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: rgba(255,255,255,0.85); }
-    .cred-dot    { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+    .step-tag  { font-size: 0.7rem; font-weight: 700; color: var(--c-teal); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px; }
+    .step-h    { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 9px; }
+    .step-body { font-size: 0.95rem; line-height: 1.7; color: var(--c-gray-1); max-width: 520px; }
 
-    /* ── TESTIMONIALS ── */
-    .testimonials { background: var(--light); }
-    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+    /* ─────────────── OBJECTIONS ─────────────── */
+    .objections { background: var(--c-gray-3); }
+    .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: var(--s5); }
+    .obj-card {
+      background: white; border-radius: var(--r-lg);
+      padding: 36px 32px; box-shadow: var(--sh-sm);
+      border: 1px solid var(--c-gray-4);
+      display: flex; flex-direction: column; gap: var(--s3);
+    }
+    .obj-quote  { font-size: 1.15rem; font-weight: 700; font-style: italic; color: var(--c-black); letter-spacing: -0.02em; line-height: 1.3; }
+    .obj-body   { font-size: 0.92rem; line-height: 1.7; color: var(--c-gray-1); }
+    .obj-box {
+      background: var(--c-gray-3); border-radius: var(--r-sm);
+      padding: 16px 18px; font-size: 0.9rem; line-height: 1.65; color: var(--c-black);
+    }
+    .obj-testi {
+      border-top: 1px solid var(--c-gray-4); padding-top: var(--s3);
+    }
+    .obj-testi-quote { font-size: 0.87rem; font-style: italic; color: var(--c-gray-1); line-height: 1.6; margin-bottom: 8px; }
+    .obj-testi-name  { font-size: 0.8rem; font-weight: 700; color: var(--c-black); }
+
+    /* ─────────────── TESTIMONIALS ─────────────── */
+    .testimonials { background: var(--c-white); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: var(--s5); }
     .testi-card {
-      background: white; border-radius: 20px; padding: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      background: var(--c-gray-3); border-radius: var(--r-lg);
+      padding: 26px; border: 1px solid var(--c-gray-4);
+      transition: box-shadow 0.2s;
     }
-    .stars { color: #F59E0B; font-size: 1rem; margin-bottom: 12px; }
-    .testi-text { font-size: 0.88rem; line-height: 1.7; color: var(--text); font-style: italic; margin-bottom: 16px; }
-    .testi-author { font-weight: 700; font-size: 0.85rem; }
-    .testi-proc   { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .testi-card:hover { box-shadow: var(--sh-md); }
+    .testi-stars  { color: var(--c-amber); font-size: 0.85rem; letter-spacing: 3px; margin-bottom: 13px; }
+    .testi-quote  { font-size: 0.88rem; line-height: 1.7; font-style: italic; color: var(--c-black); margin-bottom: 16px; }
+    .testi-name   { font-size: 0.82rem; font-weight: 700; color: var(--c-black); }
+    .testi-detail { font-size: 0.76rem; color: var(--c-gray-2); margin-top: 2px; }
 
-    /* ── PROCESS ── */
-    .process { background: var(--white); }
-    .process-steps {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px;
+    /* ─────────────── FORM SECTION (main CTA) ─────────────── */
+    .cta-section { background: var(--c-dark); }
+    .cta-grid {
+      display: grid; grid-template-columns: 1fr 420px;
+      gap: var(--s7); align-items: center;
     }
-    .process-step { text-align: center; padding: 28px 20px; }
-    .process-num {
-      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 16px;
-      background: linear-gradient(135deg, var(--teal), var(--sky));
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-weight: 900; font-size: 1.2rem;
-    }
-    .process-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
-    .process-desc  { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .cta-section .t-h2 { color: white; }
+    .cta-section .t-body-lg { color: rgba(255,255,255,0.62); }
+    .cta-section .t-eyebrow { color: rgba(0,191,165,0.85); }
+    .cta-benefits { margin-top: var(--s4); display: flex; flex-direction: column; gap: 13px; }
+    .cta-benefit { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: rgba(255,255,255,0.82); }
+    .cta-benefit-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-teal); flex-shrink: 0; }
+    .cta-section .form-card { border: none; box-shadow: 0 28px 72px rgba(0,0,0,0.45); }
 
-    /* ── CTA BOTTOM ── */
-    .cta-bottom {
-      background: linear-gradient(135deg, var(--navy) 0%, #0E3A6B 100%);
-      text-align: center; padding: 80px 64px;
+    /* ─────────────── DOCTOR ─────────────── */
+    .doctor { background: var(--c-gray-3); }
+    .doctor-grid { display: grid; grid-template-columns: 200px 1fr; gap: var(--s6); align-items: center; }
+    .doctor-photo {
+      width: 180px; height: 220px; border-radius: var(--r-xl);
+      background: linear-gradient(145deg, #0F2142, #0E3A6B);
+      display: flex; align-items: center; justify-content: center; font-size: 3.5rem;
     }
-    .cta-bottom h2 { color: white; margin-bottom: 16px; }
-    .cta-bottom p  { color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 36px; max-width: 500px; margin-left: auto; margin-right: auto; }
-    .cta-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--teal); color: white; padding: 16px 40px;
-      border-radius: 100px; font-weight: 700; font-size: 1.05rem;
-      text-decoration: none; transition: all 0.2s;
-    }
-    .cta-btn:hover { background: var(--teal2); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,196,167,0.4); }
+    .doctor-name { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .doctor-cro  { font-size: 0.84rem; font-weight: 600; color: var(--c-teal); margin-bottom: var(--s2); }
+    .doctor-bio  { font-size: 0.93rem; line-height: 1.72; color: var(--c-gray-1); max-width: 460px; margin-bottom: var(--s3); }
+    .doctor-creds { display: flex; flex-direction: column; gap: 9px; }
+    .doctor-cred { display: flex; align-items: center; gap: 10px; font-size: 0.87rem; color: var(--c-black); }
+    .d-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-teal); flex-shrink: 0; }
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--navy); padding: 32px 64px;
-      border-top: 1px solid rgba(255,255,255,0.08);
+    /* ─────────────── FOOTER ─────────────── */
+    .footer {
+      background: var(--c-dark); padding: 28px 64px;
+      border-top: 1px solid var(--c-dark-line);
     }
-    .footer-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    .footer-row {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 14px;
     }
-    .footer-inner p { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    .footer-row p { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
 
-    /* ── WhatsApp float ── */
+    /* ─────────────── WA FLOAT ─────────────── */
     .wa-float {
-      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
-      width: 58px; height: 58px; border-radius: 50%;
-      background: #25D366; color: white; font-size: 1.6rem;
+      position: fixed; bottom: 26px; right: 26px; z-index: 500;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: #25D366; color: white; font-size: 1.4rem;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 24px rgba(37,211,102,0.5);
-      text-decoration: none; transition: transform 0.2s;
+      box-shadow: 0 4px 18px rgba(37,211,102,0.45);
+      transition: transform 0.18s;
     }
-    .wa-float:hover { transform: scale(1.1); }
+    .wa-float:hover { transform: scale(1.08); }
 
-    /* ── RESPONSIVE ── */
+    /* ─────────────── RESPONSIVE ─────────────── */
     @media (max-width: 1100px) {
-      .hero { padding: 120px 32px 80px; }
-      .hero-form-wrap { position: static; transform: none; margin-top: 48px; }
-      .hero-content { max-width: 100%; }
-      .form-card { width: 100%; max-width: 480px; }
-      section { padding: 64px 32px; }
-      .navbar { padding: 14px 24px; }
-      .trust-strip { padding: 28px 32px; }
-      footer { padding: 24px 32px; }
-      .cta-bottom { padding: 64px 32px; }
+      .navbar, .trust, .footer { padding-left: 24px; padding-right: 24px; }
+      .wrap, .wrap-sm { padding-left: 24px; padding-right: 24px; }
+      .hero-grid, .cta-grid, .doctor-grid { grid-template-columns: 1fr; }
+      .hero { padding-bottom: var(--s6); }
     }
     @media (max-width: 768px) {
-      .grid-3, .testi-grid, .process-steps { grid-template-columns: 1fr; }
-      .doctor-inner { flex-direction: column; }
-      .doctor-photo { width: 100%; height: 200px; }
+      .obj-grid, .testi-grid { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 52px 1fr; gap: var(--s3); }
+      .t-hero { font-size: 2.4rem; }
+      .t-h2   { font-size: 1.9rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- ── NAVBAR ── -->
 <nav class="navbar">
-  <a class="logo" href="#">
-    <div class="logo-badge">S</div>
+  <div class="logo">
+    <div class="logo-mark">S</div>
     <div class="logo-name">Soluciona <span>Odontologia</span></div>
-  </a>
-  <a href="#form-section" class="nav-cta">Agendar avaliação gratuita</a>
+  </div>
+  <a href="#cta" class="nav-btn">Quero meu novo sorriso →</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-    <div class="hero-badge">✨ Estética Dental · Zona Sul, São Paulo</div>
-    <h1>O sorriso que você sempre quis.<br/><span>Mais perto do que imagina.</span></h1>
-    <p>Você não precisa mais esconder o sorriso nas fotos. Na Soluciona Odontologia, transformamos sorrisos com facetas e lentes de contato dental — resultado visível em dias, sem aparelho, sem dor.</p>
-    <a href="#form-section" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:white;padding:14px 28px;border-radius:100px;font-weight:700;text-decoration:none;font-size:0.95rem;">
-      Quero minha avaliação gratuita →
-    </a>
-    <div class="hero-stats">
-      <div><div class="hero-stat-num">+500</div><div class="hero-stat-lbl">Sorrisos transformados</div></div>
-      <div><div class="hero-stat-num">3 sem</div><div class="hero-stat-lbl">Resultado visível em até</div></div>
-      <div><div class="hero-stat-num">98%</div><div class="hero-stat-lbl">De pacientes satisfeitas</div></div>
-    </div>
-  </div>
 
-  <!-- Form -->
-  <div class="hero-form-wrap" id="form-section">
-    <div class="form-card">
-      <div class="form-urgency">🔥 <span>3 vagas disponíveis</span> esta semana</div>
-      <h3>Avaliação Gratuita</h3>
-      <p>Preencha e nossa equipe entra em contato em até 2 minutos</p>
-      <form id="lead-form" onsubmit="submitForm(event)">
-        <div class="form-group">
-          <label class="form-label" for="nome">Seu nome *</label>
-          <input class="form-input" id="nome" type="text" placeholder="Ex: João Silva" required />
+<!-- ── HERO ── -->
+<section class="hero section">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <!-- Left: copy -->
+      <div>
+        <p class="t-eyebrow">✦ Estética dental · Zona Sul, São Paulo</p>
+        <h1 class="t-hero">
+          O sorriso que você<br/>sempre quis mostrar<br/>
+          <span class="c-teal">já é possível.</span>
+        </h1>
+        <p class="t-body-lg" style="margin-top:var(--s3);max-width:500px;">
+          Você sabe que tem um sorriso bonito esperando aparecer. Amigas já fizeram, viram a diferença e nunca mais pararam de sorrir. Agora é a sua vez — e é mais simples e acessível do que você imagina.
+        </p>
+        <a href="#cta" class="btn btn-teal btn-lg" style="margin-top:var(--s4);">
+          Quero conhecer meu novo sorriso →
+        </a>
+        <div class="hero-proof">
+          <div class="proof-faces">
+            <div class="proof-face">A</div>
+            <div class="proof-face">C</div>
+            <div class="proof-face">F</div>
+            <div class="proof-face" style="font-size:0.6rem;">+</div>
+          </div>
+          <p class="proof-label"><strong>+200 sorrisos transformados</strong> na Zona Sul de São Paulo</p>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="whatsapp">WhatsApp *</label>
-          <input class="form-input" id="whatsapp" type="tel" placeholder="(11) 99999-9999" required />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="procedimento">O que você quer mudar no seu sorriso? *</label>
-          <select class="form-select" id="procedimento" required>
-            <option value="">Selecione...</option>
-            <option value="estetica_branco">Quero dentes mais brancos e brilhantes</option>
-            <option value="estetica_alinhado">Quero dentes mais alinhados e uniformes</option>
-            <option value="repor_dente">Quero repor um dente que perdi</option>
-            <option value="urgencia_dor">Tenho dor ou urgência no dente</option>
-            <option value="canal_extracao">Preciso de canal ou extração</option>
-            <option value="dor_rosto">Tenho dor no rosto ou estalo ao abrir a boca</option>
-            <option value="indicacao">Fui indicada pelo meu dentista ou médico</option>
-            <option value="avaliacao">Quero só fazer uma avaliação geral</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="urgencia">Quando você quer começar? *</label>
-          <select class="form-select" id="urgencia" required>
-            <option value="">Selecione...</option>
-            <option value="agora">O quanto antes — já estou decidida</option>
-            <option value="este_mes">Neste mês</option>
-            <option value="trimestre">Nos próximos 3 meses</option>
-            <option value="pesquisando">Ainda estou pesquisando</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="origem">Como nos encontrou?</label>
-          <select class="form-select" id="origem">
-            <option value="">Selecione...</option>
-            <option value="instagram">Instagram / Redes Sociais</option>
-            <option value="familiar">Indicação de amiga / familiar</option>
-            <option value="google">Google / Pesquisa online</option>
-            <option value="dentista">Indicação de dentista / médico</option>
-          </select>
-        </div>
-        <button class="form-btn" type="submit" id="form-submit-btn">
-          Quero transformar meu sorriso →
-        </button>
-      </form>
-      <p class="form-disclaimer">🔒 Seus dados são protegidos. Sem spam.</p>
+      </div>
+
+      <!-- Right: form -->
+      <div class="form-card" id="hero-form">
+        <div class="form-urgency-badge">⏳ Vagas limitadas esta semana</div>
+        <p class="form-title">Quero conhecer meu novo sorriso</p>
+        <p class="form-subtitle">Preencha em menos de 1 minuto — respondemos pelo WhatsApp em até 2 minutos.</p>
+        <form id="form-hero" onsubmit="handleSubmit(event,'btn-hero')">
+          <div class="form-group">
+            <label class="form-label" for="nome">Como posso te chamar?</label>
+            <input class="form-input" id="nome" type="text" placeholder="Seu nome" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="wa">WhatsApp</label>
+            <input class="form-input" id="wa" type="tel" placeholder="(11) 99999-9999" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mudar">O que você quer mudar no seu sorriso?</label>
+            <select class="form-select" id="mudar" required>
+              <option value="">Selecione...</option>
+              <option value="cor">Cor — quero um sorriso mais branco e brilhante</option>
+              <option value="formato">Formato — dentes quebrados, pequenos ou tortos</option>
+              <option value="completo">Os dois — quero uma transformação completa</option>
+              <option value="orientacao">Não sei ao certo — preciso de orientação</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prazo">Quando você imagina se tratando?</label>
+            <select class="form-select" id="prazo" required>
+              <option value="">Selecione...</option>
+              <option value="agora">O quanto antes — já estou decidida</option>
+              <option value="meses">Nos próximos 1–2 meses</option>
+              <option value="pesquisando">Ainda estou pesquisando e comparando</option>
+            </select>
+          </div>
+          <button class="form-cta" id="btn-hero" type="submit">Quero meu novo sorriso →</button>
+        </form>
+        <p class="form-fine">🔒 Seus dados ficam seguros. Não fazemos spam. Você só recebe o contato da nossa equipe.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- TRUST STRIP -->
-<div class="trust-strip">
-  <div class="trust-inner">
-    <div class="trust-item"><span class="trust-icon">✨</span> Especialistas em estética dental</div>
-    <div class="trust-item"><span class="trust-icon">⭐</span> 5 Estrelas no Google</div>
-    <div class="trust-item"><span class="trust-icon">📸</span> Antes/depois reais</div>
-    <div class="trust-item"><span class="trust-icon">💳</span> Parcelamos sem juros</div>
-    <div class="trust-item"><span class="trust-icon">🏥</span> Convênios aceitos</div>
-    <div class="trust-item"><span class="trust-icon">📍</span> Zona Sul, São Paulo</div>
+
+<!-- ── TRUST STRIP ── -->
+<div class="trust">
+  <div class="trust-row">
+    <div class="trust-item"><div class="trust-dot"></div>Especialistas em estética dental</div>
+    <div class="trust-item"><div class="trust-dot"></div>5 estrelas no Google</div>
+    <div class="trust-item"><div class="trust-dot"></div>Antes/depois reais</div>
+    <div class="trust-item"><div class="trust-dot"></div>Parcelamos em até 18x</div>
+    <div class="trust-item"><div class="trust-dot"></div>Convênios aceitos</div>
+    <div class="trust-item"><div class="trust-dot"></div>Zona Sul, São Paulo</div>
   </div>
 </div>
 
-<!-- SERVICES -->
-<section class="services">
-  <div class="container">
-    <div class="section-tag">Especialidades</div>
-    <h2>O que a Soluciona <span>resolve</span></h2>
-    <div class="grid-3">
-      <div class="service-card">
-        <div class="service-icon">✨</div>
-        <div class="service-title">Facetas & Lentes de Contato</div>
-        <div class="service-desc">Transforme dentes manchados, pequenos ou desalinhados. Resultado visível em poucos dias — sem aparelho, sem dor.</div>
-        <span class="service-tag">Estética · Resultado rápido</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🦷</div>
-        <div class="service-title">Implantes & Próteses</div>
-        <div class="service-desc">Perdeu um dente? Recupere a função e a estética com implantes modernos. Do unitário ao All-on-4 — soluções permanentes.</div>
-        <span class="service-tag">Permanente · Alta qualidade</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🔬</div>
-        <div class="service-title">Canal sem Dor</div>
-        <div class="service-desc">Tratamento de canal moderno com sedação disponível. Chega de dor — você quase não percebe e recupera rápido.</div>
-        <span class="service-tag">Urgência disponível</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">💡</div>
-        <div class="service-title">Laserterapia</div>
-        <div class="service-desc">Tecnologia de ponta para tratamentos mais precisos, menos desconforto e recuperação muito mais rápida.</div>
-        <span class="service-tag">Tecnologia · Conforto</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">😴</div>
-        <div class="service-title">Sedação Odontológica</div>
-        <div class="service-desc">Para quem tem medo do dentista. Faça seu tratamento completamente relaxada, sem ansiedade e sem estresse.</div>
-        <span class="service-tag">Conforto · Sem medo</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🏠</div>
-        <div class="service-title">Prótese Removível</div>
-        <div class="service-desc">Próteses fixas e removíveis com alta qualidade estética e funcional. Solução sob medida para cada caso.</div>
-        <span class="service-tag">Personalizado · Funcional</span>
-      </div>
+
+<!-- ── AGITATE ── -->
+<section class="agitate section">
+  <div class="wrap-sm">
+    <p class="t-eyebrow">Você se reconhece aqui?</p>
+    <h2 class="t-h2">Você evita fotos. Segura<br/>o sorriso. E já está<br/>cansada disso.</h2>
+    <p class="t-body-lg" style="margin-top:var(--s3);">
+      Não é frescura. É uma sensação real que rouba pequenos momentos da sua vida todo dia — a selfie que você não tira, a risada que você esconde, o perfil que você nunca atualiza porque nenhuma foto te representa do jeito que você quer.
+    </p>
+    <div class="pains">
+      <div class="pain-row"><div class="pain-emoji">😶</div><p class="pain-copy">Você abre a boca de lado nas fotos, ou simplesmente não abre</p></div>
+      <div class="pain-row"><div class="pain-emoji">👀</div><p class="pain-copy">Já viu amigas transformarem o sorriso e ficou impressionada</p></div>
+      <div class="pain-row"><div class="pain-emoji">💭</div><p class="pain-copy">Pesquisou sobre facetas ou lentes, mas ficou com medo do preço</p></div>
+      <div class="pain-row"><div class="pain-emoji">🤔</div><p class="pain-copy">Se preocupa se vai parecer artificial ou exagerado</p></div>
+      <div class="pain-row"><div class="pain-emoji">📅</div><p class="pain-copy">Quer fazer, mas sempre adia — "quando sobrar dinheiro"</p></div>
+    </div>
+    <div class="agitate-foot">
+      <p class="agitate-relief">A boa notícia: isso tem solução. E está mais perto de você do que imagina.</p>
+      <a href="#cta" class="btn btn-teal btn-lg" style="margin-top:var(--s3);">Quero conhecer meu novo sorriso →</a>
     </div>
   </div>
 </section>
 
-<!-- DOCTOR -->
-<section class="doctor">
-  <div class="container">
-    <div class="doctor-inner">
-      <div class="doctor-photo">👨‍⚕️</div>
-      <div>
-        <div class="section-tag" style="background:rgba(0,196,167,0.15);border-color:rgba(0,196,167,0.3);">Para casos que merecem atenção especial</div>
-        <div class="doctor-name">Dr. Leandro Cardoso</div>
-        <div class="doctor-cro">CRO [00000] · Especialista da Soluciona Odontologia</div>
-        <div class="doctor-bio">
-          Para os leads com casos mais complexos ou que já estão prontos para decidir, o Dr. Leandro reserva horários exclusivos para uma conversa de 30 minutos diretamente com você — sem pressa, sem julgamento, com toda a orientação que você precisa.
+
+<!-- ── SOLUTION ── -->
+<section class="solution section">
+  <div class="wrap-sm">
+    <p class="t-eyebrow">Como funciona</p>
+    <h2 class="t-h2">Da primeira conversa ao sorriso<br/>que você ama — em três passos simples.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <p class="step-tag">Passo 01</p>
+          <p class="step-h">Você conta o que quer mudar</p>
+          <p class="step-body">Sem precisar saber o nome do procedimento. Só o que te incomoda e o que você quer sentir quando sorrir. Nossa equipe entende o restante.</p>
         </div>
-        <div class="cred-list">
-          <div class="cred-item"><div class="cred-dot"></div>Especialista com mais de 15 anos de experiência</div>
-          <div class="cred-item"><div class="cred-dot"></div>Mestre em Implantodontia Avançada</div>
-          <div class="cred-item"><div class="cred-dot"></div>+500 casos tratados com sucesso comprovado</div>
-          <div class="cred-item"><div class="cred-dot"></div>Atendimento humanizado — você decide sem pressa</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <p class="step-tag">Passo 02</p>
+          <p class="step-h">Avaliação gratuita com especialista</p>
+          <p class="step-body">O Dr. Leandro analisa seu caso e apresenta as opções reais para o seu sorriso — com prazo, investimento e resultado esperado. Sem compromisso.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <p class="step-tag">Passo 03</p>
+          <p class="step-h">Seu sorriso, do jeito que você imaginou</p>
+          <p class="step-body">Tecnologia de ponta, sedação disponível e resultado que dura anos. Você sai da clínica querendo mostrar seu sorriso para todo mundo.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="process">
-  <div class="container">
-    <div class="section-tag">Como funciona</div>
-    <h2>Do <span>primeiro contato</span> ao tratamento</h2>
-    <div class="process-steps">
-      <div class="process-step">
-        <div class="process-num">1</div>
-        <div class="process-title">Preencha o formulário</div>
-        <div class="process-desc">Leva menos de 1 minuto. Informe sua necessidade e contato.</div>
+
+<!-- ── OBJECTIONS ── -->
+<section class="objections section">
+  <div class="wrap">
+    <p class="t-eyebrow">Dúvidas comuns</p>
+    <h2 class="t-h2">Já respondemos isso antes.</h2>
+    <div class="obj-grid">
+
+      <div class="obj-card">
+        <p class="obj-quote">"Deve ser caro demais pra mim."</p>
+        <p class="obj-body">Essa é a objeção número um. E faz sentido — você nunca viu um orçamento real, então o preço que imagina tende a ser muito maior do que a realidade.</p>
+        <div class="obj-box">
+          Facetas e lentes de contato dental têm opções para diferentes perfis. Parcelamos em até 18x sem juros e trabalhamos com os principais planos e financeiras. O orçamento é gratuito, sem compromisso — e você vai se surpreender.
+        </div>
+        <div class="obj-testi">
+          <p class="obj-testi-quote">"Eu achei que era coisa de 30 mil. Quando vi o orçamento, cabiu direto no cartão. Só me arrependo de ter esperado tanto."</p>
+          <p class="obj-testi-name">— Fernanda, 34 anos</p>
+        </div>
       </div>
-      <div class="process-step">
-        <div class="process-num">2</div>
-        <div class="process-title">Receba contato em 2 min</div>
-        <div class="process-desc">Nossa assistente entra em contato pelo WhatsApp em até 2 minutos.</div>
+
+      <div class="obj-card">
+        <p class="obj-quote">"E se doer? E se ficar artificial?"</p>
+        <p class="obj-body">Medos legítimos. Por isso a Soluciona trabalha com sedação odontológica — você fica em estado de relaxamento profundo durante todo o procedimento. Muitas pacientes relatam que não sentiram nada.</p>
+        <div class="obj-box">
+          O trabalho é personalizado para o seu rosto, seu sorriso, sua personalidade. Discreto ou marcante — você escolhe. Nenhum dente igual ao outro, nenhum resultado genérico.
+        </div>
+        <div class="obj-testi">
+          <p class="obj-testi-quote">"Eu tinha pavor de dentista. Fiz com sedação e foi a coisa mais tranquila. Acordei com o sorriso pronto."</p>
+          <p class="obj-testi-name">— Camila, 29 anos</p>
+        </div>
       </div>
-      <div class="process-step">
-        <div class="process-num">3</div>
-        <div class="process-title">Agende sua avaliação</div>
-        <div class="process-desc">Escolha o melhor dia e horário para a consulta de diagnóstico gratuita.</div>
-      </div>
-      <div class="process-step">
-        <div class="process-num">4</div>
-        <div class="process-title">Inicie seu tratamento</div>
-        <div class="process-desc">Nossa equipe apresenta seu plano personalizado. Você decide sem pressa.</div>
-      </div>
+
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="container">
-    <div class="section-tag">Resultados reais</div>
-    <h2>O que nossos pacientes <span>dizem</span></h2>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials section">
+  <div class="wrap">
+    <p class="t-eyebrow">Resultados reais</p>
+    <h2 class="t-h2">Elas também tinham dúvidas.<br/>Hoje não se imaginam sem o sorriso.</h2>
     <div class="testi-grid">
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Vivia escondendo o sorriso nas fotos. Depois das facetas na Soluciona, não consigo parar de sorrir — foi mais rápido e mais bonito do que eu imaginava!"</div>
-        <div class="testi-author">Amanda R.</div>
-        <div class="testi-proc">Facetas · Zona Sul, SP</div>
+        <p class="testi-stars">★★★★★</p>
+        <p class="testi-quote">"Passei anos evitando abrir a boca em fotos. Depois das facetas na Soluciona, hoje sou eu quem pede pra tirar foto. Não me reconheço de tão boa forma!"</p>
+        <p class="testi-name">Amanda R.</p>
+        <p class="testi-detail">Facetas · Vila Mascote, SP</p>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Tinha medo de dentista desde criança. Com a sedação, fiz tudo em uma sessão sem sentir nada. A equipe foi incrível — me arrependo de não ter ido antes."</div>
-        <div class="testi-author">Camila S.</div>
-        <div class="testi-proc">Sedação · Vila Mascote, SP</div>
+        <p class="testi-stars">★★★★★</p>
+        <p class="testi-quote">"Eu achei que era coisa de 30 mil. Quando vi o orçamento, cabiu direto no cartão. Só me arrependo de ter esperado tanto para dar esse passo."</p>
+        <p class="testi-name">Fernanda L.</p>
+        <p class="testi-detail">Lentes de contato dental · Saúde, SP</p>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Perdi um dente e fiquei meses sem saber o que fazer. A Soluciona me orientou, cuidou de tudo e o resultado ficou melhor do que eu esperava. Recomendo demais!"</div>
-        <div class="testi-author">Marcos A.</div>
-        <div class="testi-proc">Implante · Santo Amaro, SP</div>
+        <p class="testi-stars">★★★★★</p>
+        <p class="testi-quote">"Tinha pavor de dentista desde criança. Com a sedação, fiz tudo em uma sessão sem sentir nada. A equipe foi incrível. Indico de olhos fechados!"</p>
+        <p class="testi-name">Camila S.</p>
+        <p class="testi-detail">Sedação · Jabaquara, SP</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA BOTTOM -->
-<div class="cta-bottom">
-  <h2 style="color:white;">Pronto para transformar seu sorriso?</h2>
-  <p>Agende agora sua avaliação gratuita. Nossa equipe entra em contato em até 2 minutos.</p>
-  <a href="#form-section" class="cta-btn">Agendar avaliação gratuita →</a>
-</div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
+<!-- ── CTA / FORM SECTION ── -->
+<section class="cta-section section" id="cta">
+  <div class="wrap">
+    <div class="cta-grid">
+
+      <div>
+        <p class="t-eyebrow">Avaliação gratuita</p>
+        <h2 class="t-h2">Dê o primeiro passo.<br/>Nós cuidamos do resto.</h2>
+        <p class="t-body-lg" style="margin-top:var(--s3);">Nossa equipe responde pelo WhatsApp em até 2 minutos e já apresenta as possibilidades reais para o seu sorriso — sem pressa, sem compromisso.</p>
+        <div class="cta-benefits">
+          <div class="cta-benefit"><div class="cta-benefit-dot"></div>Avaliação 100% gratuita, sem compromisso</div>
+          <div class="cta-benefit"><div class="cta-benefit-dot"></div>Resultado visível em poucos dias</div>
+          <div class="cta-benefit"><div class="cta-benefit-dot"></div>Sedação disponível para quem tem medo</div>
+          <div class="cta-benefit"><div class="cta-benefit-dot"></div>Parcelamos em até 18x sem juros</div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-urgency-badge">⏳ Vagas limitadas esta semana. Respondemos em até 2 minutos após o envio.</div>
+        <p class="form-title">Quero conhecer meu novo sorriso</p>
+        <p class="form-subtitle">Preencha em menos de 1 minuto.</p>
+        <form id="form-cta" onsubmit="handleSubmit(event,'btn-cta')">
+          <div class="form-group">
+            <label class="form-label" for="nome2">Como posso te chamar?</label>
+            <input class="form-input" id="nome2" type="text" placeholder="Seu nome" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="wa2">WhatsApp</label>
+            <input class="form-input" id="wa2" type="tel" placeholder="(11) 99999-9999" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mudar2">O que você quer mudar no seu sorriso?</label>
+            <select class="form-select" id="mudar2" required>
+              <option value="">Selecione...</option>
+              <option value="cor">Cor — quero um sorriso mais branco e brilhante</option>
+              <option value="formato">Formato — dentes quebrados, pequenos ou tortos</option>
+              <option value="completo">Os dois — quero uma transformação completa</option>
+              <option value="orientacao">Não sei ao certo — preciso de orientação</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prazo2">Quando você imagina se tratando?</label>
+            <select class="form-select" id="prazo2" required>
+              <option value="">Selecione...</option>
+              <option value="agora">O quanto antes — já estou decidida</option>
+              <option value="meses">Nos próximos 1–2 meses</option>
+              <option value="pesquisando">Ainda estou pesquisando e comparando</option>
+            </select>
+          </div>
+          <button class="form-cta" id="btn-cta" type="submit">Quero meu novo sorriso →</button>
+        </form>
+        <p class="form-fine">🔒 Seus dados ficam seguros. Não fazemos spam. Você só recebe o contato da nossa equipe.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ── DOCTOR ── -->
+<section class="doctor section">
+  <div class="wrap">
+    <div class="doctor-grid">
+      <div class="doctor-photo">👨‍⚕️</div>
+      <div>
+        <p class="t-eyebrow">Para casos que merecem atenção especial</p>
+        <p class="doctor-name">Dr. Leandro Cardoso</p>
+        <p class="doctor-cro">CRO [00000] · Especialista da Soluciona Odontologia</p>
+        <p class="doctor-bio">Para os casos mais complexos ou para quem já está pronta para decidir, o Dr. Leandro reserva horários exclusivos para uma conversa de 30 minutos diretamente com você — sem pressa, sem julgamento.</p>
+        <div class="doctor-creds">
+          <div class="doctor-cred"><div class="d-dot"></div>Especialista com mais de 15 anos de experiência</div>
+          <div class="doctor-cred"><div class="d-dot"></div>Mestre em Implantodontia Avançada</div>
+          <div class="doctor-cred"><div class="d-dot"></div>+500 casos tratados com sucesso comprovado</div>
+          <div class="doctor-cred"><div class="d-dot"></div>Atendimento humanizado — você decide sem pressa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="footer-row">
     <div class="logo">
-      <div class="logo-badge">S</div>
+      <div class="logo-mark">S</div>
       <div class="logo-name" style="color:white;">Soluciona <span>Odontologia</span></div>
     </div>
     <p>© 2026 Soluciona Odontologia · Zona Sul, São Paulo</p>
-    <p style="color:rgba(255,255,255,0.3);">Todos os direitos reservados.</p>
+    <p>Todos os direitos reservados.</p>
   </div>
 </footer>
 
-<!-- WhatsApp Float -->
-<a class="wa-float" href="https://wa.me/5500000000000" target="_blank" title="Fale conosco no WhatsApp">💬</a>
+<!-- ── WA FLOAT ── -->
+<a class="wa-float" href="https://wa.me/5500000000000" target="_blank" title="Fale pelo WhatsApp">💬</a>
+
 
 <script>
-  function submitForm(e) {
+  // Form submit
+  function handleSubmit(e, btnId) {
     e.preventDefault();
-    const btn = document.getElementById('form-submit-btn');
+    const btn = document.getElementById(btnId);
     btn.textContent = '⏳ Enviando...';
     btn.disabled = true;
-    // Simulate submission (replace with actual webhook in production)
     setTimeout(() => {
       btn.textContent = '✅ Enviado! Entraremos em contato em 2 min';
-      btn.style.background = '#10B981';
-      // TODO: POST to /api/lead with form data
-    }, 1500);
+      btn.style.background = 'var(--c-teal)';
+    }, 1400);
+    // TODO: POST to webhook with form data
   }
 
   // Phone mask
-  document.getElementById('whatsapp').addEventListener('input', function(e) {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length <= 11) {
-      v = v.replace(/(\d{2})(\d)/, '($1) $2');
-      v = v.replace(/(\d{5})(\d)/, '$1-$2');
-    }
-    e.target.value = v;
+  ['wa','wa2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g,'');
+      if (v.length <= 11) {
+        v = v.replace(/(\d{2})(\d)/,'($1) $2');
+        v = v.replace(/(\d{5})(\d)/,'$1-$2');
+      }
+      e.target.value = v;
+    });
   });
 </script>
 
